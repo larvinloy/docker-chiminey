@@ -22,12 +22,9 @@ sleep 10
 
 
 export PYTHON_EGG_CACHE=/opt/chiminey/shared/egg-cache
-#python setup.py clean
-#find . -name '*.py[co]' -delete
-# python bootstrap.py -c buildout-prod.cfg -v 1.7.0
-# bin/buildout -v -c buildout-prod.cfg install
-python chiminey.py syncdb --noinput --migrate
-python chiminey.py collectstatic --noinput
+
+su chiminey -c "python chiminey.py syncdb --noinput --migrate"
+su chiminey -c "python chiminey.py collectstatic --noinput"
 chmod +r -R /opt/chiminey/current/static
 
 

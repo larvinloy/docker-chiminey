@@ -60,6 +60,5 @@ APIHOST = "http://172.16.231.130"
 
 BROKER_URL = 'redis://redis:6379/0'
 CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
-REDIS_HOST = "redis"
 
 djcelery.setup_loader()

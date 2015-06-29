@@ -38,15 +38,10 @@ RUN mkdir -p /chiminey_settings
 ADD chiminey_settings/ /chiminey_settings
 RUN chown -R chiminey.nginx /chiminey_settings
 
-
 # prep manage.py
 ADD chiminey.py /opt/chiminey/current/chiminey.py
 RUN chown -R chiminey.nginx /opt/chiminey/current/chiminey.py
 RUN chmod u+x /opt/chiminey/current/chiminey.py
-
-# prep wsgi wrapper
-ADD wsgi.py /opt/chiminey/current/wsgi.py
-RUN chown -R chiminey.nginx /opt/chiminey/current/wsgi.py
 
 # create remotesys
 RUN mkdir -p /var/chiminey/remotesys
@@ -75,11 +70,6 @@ USER root
 RUN mkdir -p /var/run/gunicorn/chiminey
 RUN chown chiminey.nginx /var/run/gunicorn/chiminey
 
-# setup gunicorn
-COPY gunicorn_conf.py /opt/chiminey/current/gunicorn_conf.py
-
-EXPOSE 8000
-
 RUN mkdir -p /logs
 RUN chown -R chiminey:nginx /logs
 
@@ -88,9 +78,12 @@ VOLUME /chiminey_settings
 VOLUME /var/chiminey/remotesys
 VOLUME /opt/chiminey/current/static
 
-RUN mkdir /etc/service/01gunicorn
-ADD gunicorn_run.sh /etc/service/01gunicorn/run
-RUN chmod +x /etc/service/01gunicorn/run
-CMD ["/sbin/my_init"]
+USER root
 
+ADD celery_conf.py /opt/chiminey/current/chiminey/celery_conf.py
+
+RUN mkdir /etc/service/celerybeat
+ADD celerybeat_run.sh /etc/service/celerybeat/run
+RUN chmod +x /etc/service/celerybeat/run
+CMD ["/sbin/my_init"]
 
