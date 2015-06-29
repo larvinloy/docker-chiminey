@@ -1,6 +1,6 @@
 
-docker-compose run chiminey python chiminey.py createsuperuser
-docker-compose run chiminey python chiminey.py initial
-docker-compose run chiminey python chiminey.py createuser
+docker exec -ti dockerchiminey_chiminey_1 python chiminey.py createsuperuser
+docker exec -ti dockerchiminey_chiminey_1 python chiminey.py initial
+docker exec -ti dockerchiminey_chiminey_1 python chiminey.py createuser
 
-docker-compose run chiminey python chiminey.py randnumunix
+docker exec -ti dockerchiminey_chiminey_1 python chiminey.py randnumunix

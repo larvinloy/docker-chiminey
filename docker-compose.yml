@@ -101,11 +101,11 @@ dbstore:
    - /var/lib/postgresql
   command: true
 
-rabbitmqstore:
-  image: tutum/rabbitmq
-  volumes:
-    - /data/mnesia
-  command: true
+# rabbitmqstore:
+#   image: tutum/rabbitmq
+#   volumes:
+#     - /data/mnesia
+#   command: true
 
 redisstore:
   image: redis
