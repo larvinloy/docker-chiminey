@@ -15,4 +15,5 @@ fi
 sleep 30
 
 # run Celery worker for our project myproject with Celery configuration stored in Celeryconf
-su -m chiminey -c "python chiminey.py celerybeat --logfile=/logs/beat.log"
+#su -m chiminey -c "python chiminey.py celerybeat --logfile=/logs/beat.log"
+su -m chiminey -c "python chiminey.py celerybeat --logfile=/logs/beat.log >> /logs/beat.log 2>&1"

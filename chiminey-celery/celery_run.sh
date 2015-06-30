@@ -16,4 +16,5 @@ fi
 sleep 30
 
 # run Celery worker for our project myproject with Celery configuration stored in Celeryconf
-su -m chiminey -c "python chiminey.py celery worker --logfile=/logs/celery.log --loglevel=DEBUG"
+#su -m chiminey -c "python chiminey.py celery worker --logfile=/logs/celery.log --loglevel=DEBUG"
+su -m chiminey -c "python chiminey.py celeryd_multi start w1 w2 w3 w4 -l WARN --soft-time-limit=155200 --time-limit=115400 -E -Q:w1 hightasks -c 4 -Q:w2,w3,w4 default --logfile=/logs/celery.log --loglevel=DEBUG >> /logs/celery.log 2>&1"
