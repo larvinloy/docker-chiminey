@@ -13,20 +13,8 @@ DATABASES = {
     },
 }
 
-
-CELERY_RESULT_BACKEND = 'amqp'
-
 STAGING_PATH = "/staging"
 DEFAULT_STORAGE_BASE_DIR = "/store"
-
-
-BROKER_URL ='amqp://{user}:{password}@{hostname}/{vhost}/'.format(
-        user='admin',
-        password=os.environ.get('RABBITMQ_ENV_RABBITMQ_PASS', 'mypass'),
-        hostname='rabbitmq:5672',
-        vhost='')
-
-
 
 OUR_APPS = ('chiminey.smartconnectorscheduler',
     'chiminey.simpleui')
@@ -61,5 +49,121 @@ APIHOST = "http://172.16.231.130"
 BROKER_URL = 'redis://redis:6379/0'
 CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 REDIS_HOST = "redis"
+
+
+LOGGER_LEVEL = "DEBUG"
+
+
+
+
+
+CSRACK_USERDATA = """#!/bin/bash
+chmod 700 /etc/sudoers
+sed -i '/requiretty/d' /etc/sudoers
+chmod 440 /etc/sudoers
+echo changedsudo
+"""
+
+# According to Nectar Image Catalog 30/6/15
+VM_IMAGES = {
+              #'csrack': {'placement': None, 'vm_image': "ami-00000004", 'user_data': CSRACK_USERDATA},
+              'csrack': {'placement': None, 'vm_image': "ami-00000009", 'user_data': CSRACK_USERDATA}, # centos 7
+              #'nectar': {'placement': None, 'vm_image': "ami-00001c06", 'user_data': ''},
+              #'nectar': {'placement': None, 'vm_image': "ami-00001e2b", 'user_data': ''},
+              'nectar': {'placement': 'monash-01', 'vm_image': "ami-000022b0", 'user_data': ''}, # centos 7
+              'amazon': {'placement': '', 'vm_image': "ami-9352c1a9", 'user_data': ''}}
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'timestamped': {
+            'format': ' [%(asctime)s: %(levelname)s/%(processName)s] %(message)s'
+           # 'format': '%(asctime)s-%(filename)s-%(lineno)s-%(levelname)s: %(message)s'
+        },
+    },
+
+    'handlers': {
+    'file': {
+    'class': 'logging.handlers.RotatingFileHandler',
+    'filename': '/logs/celery.log',
+    'formatter': 'timestamped',
+            'maxBytes': 1024 * 1024 * 100,  # 100 mb
+            'backupCount': 2
+            },
+    },
+    'loggers': {
+
+    'chiminey': {
+    'level': LOGGER_LEVEL,
+    'handlers': ['file'],
+    },
+    'chiminey.smartconnectorscheduler': {
+    'level': LOGGER_LEVEL,
+    'handlers': ['file'],
+    },
+    'chiminey.sshconnection': {
+    'level': LOGGER_LEVEL,
+    'handlers': ['file'],
+    },
+    'chiminey.platform': {
+    'level': LOGGER_LEVEL,
+    'handlers': ['file'],
+    },
+    'chiminey.cloudconnection': {
+    'level': LOGGER_LEVEL,
+    'handlers': ['file'],
+    },
+    'chiminey.reliabilityframework': {
+    'level': LOGGER_LEVEL,
+    'handlers': ['file'],
+    },
+    'chiminey.simpleui': {
+    'level': LOGGER_LEVEL,
+    'handlers': ['file'],
+    },
+    'chiminey.mytardis': {
+    'level': LOGGER_LEVEL,
+    'handlers': ['file'],
+    },
+    'chiminey.simpleui.wizard': {
+    'level': LOGGER_LEVEL,
+    'handlers': ['file'],
+    },
+    'chiminey.storage': {
+    'level': LOGGER_LEVEL,
+    'handlers': ['file'],
+    },
+    'chiminey.sshconnector': {
+    'level': LOGGER_LEVEL,
+    'handlers': ['file'],
+    },
+    'chiminey.core': {
+    'level': LOGGER_LEVEL,
+    'handlers': ['file'],
+    },
+    'chiminey.smartconnectorscheduler.tasks': {
+    'level': LOGGER_LEVEL,
+    'handlers': ['file'],
+    },
+    'celery.task': {
+    'level': 'ERROR',
+    'handlers': ['file'],
+    },
+    'django.db.backends': {
+    'level': 'ERROR',
+    'handlers': ['file'],
+    },
+    'south': {
+     'level': LOGGER_LEVEL,
+     'handlers': ['file'],
+
+    },
+    }
+    }
+
+
+
 
 djcelery.setup_loader()

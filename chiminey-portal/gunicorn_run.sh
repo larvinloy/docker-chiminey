@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 cd /opt/chiminey/current
 
 
@@ -28,5 +28,8 @@ su chiminey -c "python chiminey.py collectstatic --noinput"
 chmod +r -R /opt/chiminey/current/static
 
 
-/usr/bin/gunicorn --log-level DEBUG --log-file /logs/gunicorn.log -c /opt/chiminey/current/gunicorn_conf.py -u chiminey -g nginx -b :8000 wsgi:application >> /logs/gunicorn.log  2>&1
+logfile=${LOG_FILE:gunicorn}
+
+
+/usr/bin/gunicorn --log-level DEBUG --log-file /logs/gunicorn.log -c /opt/chiminey/current/gunicorn_conf.py -u chiminey -g nginx -b :8000 wsgi:application >> /logs/$logfile.log 2>&1
 

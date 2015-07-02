@@ -2,6 +2,7 @@
 
 cd /opt/chiminey/current
 
+
 if grep --quiet SECRET_KEY /chiminey_settings/docker_settings.py; then
     echo Secret key exists
 else
@@ -10,10 +11,14 @@ else
 fi
 
 
-# need to sleep to make sure that db is ready before syndb runs
+# need to sleep to make sure that db is ready before celery runs
 # there must be a better way of doing this...
 sleep 30
 
-# run Celery worker for our project myproject with Celery configuration stored in Celeryconf
-#su -m chiminey -c "python chiminey.py celerybeat --logfile=/logs/beat.log"
-su -m chiminey -c "python chiminey.py celerybeat --logfile=/logs/beat.log >> /logs/beat.log 2>&1"
+#logfile=${LOG_FILE:celery}
+
+#su -m chiminey -c "python chiminey.py celery worker --logfile=/logs/celery.log --loglevel=DEBUG"
+su chiminey -c "python chiminey.py celeryd_multi start w1 w2 w3 w4 -l WARN --soft-time-limit=155200 --time-limit=115400 -E -Q:w1 hightasks -c 4 -Q:w2,w3,w4 default --logfile=/logs/celery.log --loglevel=INFO >> /logs/celery.log 2>&1"
+
+# we don't want this process to end
+tail -f /dev/null

@@ -88,9 +88,25 @@ VOLUME /chiminey_settings
 VOLUME /var/chiminey/remotesys
 VOLUME /opt/chiminey/current/static
 
-RUN mkdir /etc/service/01gunicorn
-ADD gunicorn_run.sh /etc/service/01gunicorn/run
-RUN chmod +x /etc/service/01gunicorn/run
-CMD ["/sbin/my_init"]
+#RUN mkdir /etc/service/gunicorn
+#ADD gunicorn_run.sh /etc/service/gunicorn/run
+#RUN chmod +x /etc/service/gunicorn/run
+#CMD ["/sbin/my_init"]
 
+ENV LOG_FILE gunicorn
+
+ADD gunicorn_run.sh /
+RUN chmod u+x /gunicorn_run.sh
+ADD celery_run.sh /
+RUN chmod u+x /celery_run.sh
+ADD celerybeat_run.sh /
+RUN chmod u+x /celerybeat_run.sh
+
+ADD celery_conf.py /opt/chiminey/current/chiminey/celery_conf.py
+
+ADD start.sh /
+RUN chmod u+x /start.sh
+
+ENTRYPOINT ["/start.sh"]
+CMD ["gunicorn"]
 

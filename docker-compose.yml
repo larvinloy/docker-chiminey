@@ -6,24 +6,42 @@ chiminey:
    - redis:redis
   volumes_from:
    - chimineystore
+  command:
+   - "gunicorn"
+  environment:
+   - LOG_FILE=gunicorn
+  #volumes:
+  #  - ./src:/opt/chiminey/current/chiminey
 
 celery:
   restart: always
-  build: chiminey-celery
+  build: chiminey-portal
   links:
    - db:db
    - redis:redis
   volumes_from:
    - chimineystore
+  command:
+    - "celery"
+  environment:
+   - LOG_FILE=celery
+  #volumes:
+  #  - ./src:/opt/chiminey/current/chiminey
 
 beat:
   restart: always
-  build: chiminey-beat
+  build: chiminey-portal
   links:
    - db:db
    - redis:redis
   volumes_from:
    - chimineystore
+  command:
+    - "beat"
+  environment:
+   - LOG_FILE=beat
+  #volumes:
+  #  - ./src:/opt/chiminey/current/chiminey
 
 nginx:
   restart: always
@@ -69,9 +87,10 @@ monitor:
 chimineystore:
   build: chiminey-portal
   volumes:
-   #- $PWD/current:/opt/chiminey/current
+   #- ./current:/opt/chiminey/current
    - /var/chiminey/remotesys
-  command: true
+  command: 
+    - "store"
 
 dbstore:
   image: postgres
