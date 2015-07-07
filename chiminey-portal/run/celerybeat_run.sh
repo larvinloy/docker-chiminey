@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 cd /opt/chiminey/current
 
@@ -14,9 +14,9 @@ fi
 # there must be a better way of doing this...
 sleep 30
 
-#logfile=${LOG_FILE:beat}
-
 
 # run Celery worker for our project myproject with Celery configuration stored in Celeryconf
 #su -m chiminey -c "python chiminey.py celerybeat --logfile=/logs/beat.log"
-su -m chiminey -c "python chiminey.py celerybeat --logfile=/logs/beat.log >> /logs/beat.log 2>&1"
+su -m chiminey -c "python chiminey.py celerybeat --logfile=/logs/beat.log --pidfile=/logs/beat/beat.pid --schedule=/logs/beat/celerybeat-schedule"
+
+echo beat done

@@ -1,7 +1,6 @@
 #!/bin/bash
 
 main() {
-	echo I am $1
 
 	case "$1" in 
 		celery)
@@ -35,4 +34,3 @@ run_beat() {
 }
 
 main "$@"
-echo finished start

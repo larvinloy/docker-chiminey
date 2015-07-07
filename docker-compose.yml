@@ -6,12 +6,9 @@ chiminey:
    - redis:redis
   volumes_from:
    - chimineystore
+   - logsstore
   command:
    - "gunicorn"
-  environment:
-   - LOG_FILE=gunicorn
-  #volumes:
-  #  - ./src:/opt/chiminey/current/chiminey
 
 celery:
   restart: always
@@ -21,12 +18,9 @@ celery:
    - redis:redis
   volumes_from:
    - chimineystore
+   - logsstore
   command:
     - "celery"
-  environment:
-   - LOG_FILE=celery
-  #volumes:
-  #  - ./src:/opt/chiminey/current/chiminey
 
 beat:
   restart: always
@@ -36,12 +30,11 @@ beat:
    - redis:redis
   volumes_from:
    - chimineystore
+   - logsstore
   command:
     - "beat"
   environment:
    - LOG_FILE=beat
-  #volumes:
-  #  - ./src:/opt/chiminey/current/chiminey
 
 nginx:
   restart: always
@@ -50,6 +43,7 @@ nginx:
    - "80:80"
   volumes_from:
    - chiminey
+   - logsstore
   links:
    - chiminey:chiminey
    - monitor:monitor
@@ -74,7 +68,6 @@ monitor:
   restart: always
   build: chiminey-monitor
   ports:
-    #- "5555:5555"
     - "5555:5555"
   links:
     - redis:redis
@@ -87,7 +80,6 @@ monitor:
 chimineystore:
   build: chiminey-portal
   volumes:
-   #- ./current:/opt/chiminey/current
    - /var/chiminey/remotesys
   command: 
     - "store"
@@ -103,3 +95,10 @@ redisstore:
   volumes:
     - /data
   command: true
+
+logsstore:
+  build: chiminey-portal
+  volumes:
+    - /logs
+  command: true
+

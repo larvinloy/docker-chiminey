@@ -54,9 +54,6 @@ REDIS_HOST = "redis"
 LOGGER_LEVEL = "DEBUG"
 
 
-
-
-
 CSRACK_USERDATA = """#!/bin/bash
 chmod 700 /etc/sudoers
 sed -i '/requiretty/d' /etc/sudoers
@@ -89,8 +86,8 @@ LOGGING = {
     'class': 'logging.handlers.RotatingFileHandler',
     'filename': '/logs/celery.log',
     'formatter': 'timestamped',
-            'maxBytes': 1024 * 1024 * 100,  # 100 mb
-            'backupCount': 2
+            'maxBytes': 1024 * 1024 * 1000,  # 1000 mb
+            'backupCount': 4
             },
     },
     'loggers': {
@@ -164,6 +161,16 @@ LOGGING = {
     }
 
 
+CELERYBEAT_SCHEDULE = {
+    # "test": {
+    #     "task": "smartconnectorscheduler.test",
+    #     "schedule": timedelta(seconds=15),
+    # },
+    "run_contexts": {
+        "task": "smartconnectorscheduler.run_contexts",
+        "schedule": timedelta(seconds=60)
+      },
+    }
 
 
 djcelery.setup_loader()
