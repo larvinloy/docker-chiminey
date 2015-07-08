@@ -42,8 +42,7 @@ INSTALLED_APPS = (
     'django_nose',
 ) + OUR_APPS
 
-APIHOST = "http://172.16.231.130"
-#APIHOST = "http://nginx"
+APIHOST = os.environ.get('APIHOST', 'http://127.0.0.1')
 
 
 BROKER_URL = 'redis://redis:6379/0'

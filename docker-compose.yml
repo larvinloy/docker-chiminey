@@ -9,6 +9,8 @@ chiminey:
    - logsstore
   command:
    - "gunicorn"
+  environment:
+   - APIHOST=http://118.138.241.38/
 
 celery:
   restart: always
@@ -46,7 +48,7 @@ nginx:
    - logsstore
   links:
    - chiminey:chiminey
-   - monitor:monitor
+#    - monitor:monitor
 
 db:
   restart: always
@@ -101,4 +103,54 @@ logsstore:
   volumes:
     - /logs
   command: true
+
+elasticsearch:
+ image: denibertovic/elasticsearch
+ volumes:
+     - ./logs/elasticsearch:/opt/elasticsearch/logs
+     - ./config-examples/elasticsearch:/opt/elasticsearch/config
+     - ./data/elasticsearch:/opt/elasticsearch/data
+ ports:
+     - "9200:9200"
+     - "9300:9300"
+ restart: always
+
+logstash:
+  image: denibertovic/logstash
+  links:
+      - elasticsearch
+  volumes:
+      - ./config-examples/logstash:/opt/conf
+      - ./certs:/opt/certs
+      - ./logs/logstash:/opt/logs
+  volumes_from:
+      - logsstore
+  ports:
+      - "514:514"
+      - "5043:5043"
+      - "9292:9292"
+  restart: always
+
+kibana:
+  image: denibertovic/kibana
+  links:
+      - elasticsearch
+  volumes:
+      - ./logs/kibana:/logs
+      - ./config-examples/kibana:/kibana/config
+  ports:
+      - "5601:5601"
+  restart: always
+
+cadvisor:
+  image: google/cadvisor:latest
+  volumes:
+    - /:/rootfs:ro
+    - /var/run:/var/run:rw   
+    - /sys:/sys:ro  
+    - /var/lib/docker/:/var/lib/docker:ro   
+  ports:
+    - "8080:8080"
+  restart: always
+
 
