@@ -20,7 +20,8 @@ time_limit=${CELERY_TIME_LIMIT:115400}
 log_level=${CELERY_LOG_LEVEL:WARN}
 
 #su -m chiminey -c "python chiminey.py celery worker --logfile=/logs/celery.log --loglevel=DEBUG"
-su chiminey -c "python chiminey.py celeryd_multi start w1 w2 w3 w4 -l WARN --soft-time-limit=155200 --time-limit=115400 -E -Q:w1 hightasks -c 4 -Q:w2,w3,w4 default --pidfile=/logs/celery/%n.pid --logfile=/logs/celery/%n.log --loglevel=WARN >> /logs/celery/celery.log 2>&1"
+su chiminey -c "python chiminey.py celeryd_multi start w1 w2 w3 w4 -l $log_level --soft-time-limit=155200 --time-limit=115400 -E -Q:w1 hightasks -c 4 -Q:w2,w3,w4 default --pidfile=/logs/celery/%h.pid --logfile=/logs/celery/%h.log  >> /logs/celery/celery.log 2>&1"
 
 # we don't want this process to end
 tail -f /dev/null
+	

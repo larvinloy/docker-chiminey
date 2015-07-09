@@ -13,6 +13,9 @@ DATABASES = {
     },
 }
 
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False')
+TEMPLATE_DEBUG = DEBUG
+
 STAGING_PATH = "/staging"
 DEFAULT_STORAGE_BASE_DIR = "/store"
 
@@ -50,8 +53,6 @@ CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 REDIS_HOST = "redis"
 
 
-LOGGER_LEVEL = "DEBUG"
-
 
 CSRACK_USERDATA = """#!/bin/bash
 chmod 700 /etc/sudoers
@@ -70,6 +71,9 @@ VM_IMAGES = {
               'amazon': {'placement': '', 'vm_image': "ami-9352c1a9", 'user_data': ''}}
 
 
+LOGGER_LEVEL = "DEBUG"
+
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -83,7 +87,7 @@ LOGGING = {
     'handlers': {
     'file': {
     'class': 'logging.handlers.RotatingFileHandler',
-    'filename': '/logs/celery.log',
+    'filename': os.path.join("/logs", os.environ.get('CHIMINEY_LOG_FILE', 'chiminey.log')),
     'formatter': 'timestamped',
             'maxBytes': 1024 * 1024 * 1000,  # 1000 mb
             'backupCount': 4
@@ -167,7 +171,7 @@ CELERYBEAT_SCHEDULE = {
     # },
     "run_contexts": {
         "task": "smartconnectorscheduler.run_contexts",
-        "schedule": timedelta(seconds=60)
+        "schedule": timedelta(seconds=os.environ.get('CELERY_POLL_TIME', '60'))
       },
     }
 

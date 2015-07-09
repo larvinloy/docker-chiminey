@@ -9,8 +9,15 @@ chiminey:
    - logsstore
   command:
    - "gunicorn"
+  volumes:
+   - /etc/localtime:/etc/localtime:ro
+   #- ./src:/opt/chiminey
   environment:
    - APIHOST=http://118.138.241.38/
+   - GUNICORN_LOG_LEVEL=WARN
+   - CHIMINEY_LOG_FILE=chiminey.log
+   - CELERY_POLL_TIME=10
+   - DJANGO_DEBUG=False
 
 celery:
   restart: always
@@ -23,6 +30,14 @@ celery:
    - logsstore
   command:
     - "celery"
+  volumes:
+    - /etc/localtime:/etc/localtime:ro
+    #- ./src:/opt/chiminey
+  environment:
+    - CELERY_LOG_LEVEL=DEBUG
+    - CHIMINEY_LOG_FILE=celery.log
+    - CELERY_POLL_TIME=10
+    - DJANGO_DEBUG=False
 
 beat:
   restart: always
@@ -35,17 +50,26 @@ beat:
    - logsstore
   command:
     - "beat"
+  volumes:
+    - /etc/localtime:/etc/localtime:ro   
+    #- ./src:/opt/chiminey
   environment:
-   - LOG_FILE=beat
+   - CHIMINEY_LOG_FILE=beat.log
+   - CELERY_POLL_TIME=10
+   - DJANGO_DEBUG=False
 
 nginx:
   restart: always
   build: chiminey-nginx
   ports:
    - "80:80"
+   - "433:433"
   volumes_from:
    - chiminey
    - logsstore
+  volumes:
+    - ./certs:/opt/certs
+    - /etc/localtime:/etc/localtime:ro    
   links:
    - chiminey:chiminey
 #    - monitor:monitor
@@ -110,9 +134,9 @@ elasticsearch:
      - ./logs/elasticsearch:/opt/elasticsearch/logs
      - ./config-examples/elasticsearch:/opt/elasticsearch/config
      - ./data/elasticsearch:/opt/elasticsearch/data
- ports:
-     - "9200:9200"
-     - "9300:9300"
+ #ports:
+     #- "9200:9200"
+     #- "9300:9300" 
  restart: always
 
 logstash:
@@ -125,10 +149,10 @@ logstash:
       - ./logs/logstash:/opt/logs
   volumes_from:
       - logsstore
-  ports:
-      - "514:514"
-      - "5043:5043"
-      - "9292:9292"
+  #ports:
+      #- "514:514"
+      #- "5043:5043"
+      #- "9292:9292"
   restart: always
 
 kibana:
@@ -142,15 +166,15 @@ kibana:
       - "5601:5601"
   restart: always
 
-cadvisor:
-  image: google/cadvisor:latest
-  volumes:
-    - /:/rootfs:ro
-    - /var/run:/var/run:rw   
-    - /sys:/sys:ro  
-    - /var/lib/docker/:/var/lib/docker:ro   
-  ports:
-    - "8080:8080"
-  restart: always
+# cadvisor:
+#   image: google/cadvisor:latest
+#   volumes:
+#     - /:/rootfs:ro
+#     - /var/run:/var/run:rw   
+#     - /sys:/sys:ro  
+#     - /var/lib/docker/:/var/lib/docker:ro   
+#   ports:
+#     - "8080:8080"
+#   restart: always
 
 
