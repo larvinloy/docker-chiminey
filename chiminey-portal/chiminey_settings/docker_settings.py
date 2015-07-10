@@ -171,9 +171,11 @@ CELERYBEAT_SCHEDULE = {
     # },
     "run_contexts": {
         "task": "smartconnectorscheduler.run_contexts",
-        "schedule": timedelta(seconds=os.environ.get('CELERY_POLL_TIME', '60'))
+        "schedule": timedelta(seconds=int(os.environ.get('CELERY_POLL_TIME', 60)))
       },
     }
 
 
 djcelery.setup_loader()
+
+

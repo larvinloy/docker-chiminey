@@ -35,7 +35,7 @@ celery:
     #- ./src:/opt/chiminey
   environment:
     - CELERY_LOG_LEVEL=DEBUG
-    - CHIMINEY_LOG_FILE=celery.log
+    - CHIMINEY_LOG_FILE=celery/celery.log
     - CELERY_POLL_TIME=10
     - DJANGO_DEBUG=False
 
@@ -51,10 +51,10 @@ beat:
   command:
     - "beat"
   volumes:
-    - /etc/localtime:/etc/localtime:ro   
+    - /etc/localtime:/etc/localtime:ro
     #- ./src:/opt/chiminey
   environment:
-   - CHIMINEY_LOG_FILE=beat.log
+   - CHIMINEY_LOG_FILE=beat/beat.log
    - CELERY_POLL_TIME=10
    - DJANGO_DEBUG=False
 
@@ -68,8 +68,8 @@ nginx:
    - chiminey
    - logsstore
   volumes:
-    - ./certs:/opt/certs
-    - /etc/localtime:/etc/localtime:ro    
+    - ./certs:/opt/certs:ro
+    - /etc/localtime:/etc/localtime:ro
   links:
    - chiminey:chiminey
 #    - monitor:monitor
@@ -107,7 +107,7 @@ chimineystore:
   build: chiminey-portal
   volumes:
    - /var/chiminey/remotesys
-  command: 
+  command:
     - "store"
 
 dbstore:
@@ -136,7 +136,7 @@ elasticsearch:
      - ./data/elasticsearch:/opt/elasticsearch/data
  #ports:
      #- "9200:9200"
-     #- "9300:9300" 
+     #- "9300:9300"
  restart: always
 
 logstash:
@@ -155,24 +155,24 @@ logstash:
       #- "9292:9292"
   restart: always
 
-kibana:
-  image: denibertovic/kibana
-  links:
-      - elasticsearch
-  volumes:
-      - ./logs/kibana:/logs
-      - ./config-examples/kibana:/kibana/config
-  ports:
-      - "5601:5601"
-  restart: always
+# kibana:
+#   image: denibertovic/kibana
+#   links:
+#       - elasticsearch
+#   volumes:
+#       - ./logs/kibana:/logs
+#       - ./config-examples/kibana:/kibana/config
+#   ports:
+#       - "5601:5601"
+#   restart: always
 
 # cadvisor:
 #   image: google/cadvisor:latest
 #   volumes:
 #     - /:/rootfs:ro
-#     - /var/run:/var/run:rw   
-#     - /sys:/sys:ro  
-#     - /var/lib/docker/:/var/lib/docker:ro   
+#     - /var/run:/var/run:rw
+#     - /sys:/sys:ro
+#     - /var/lib/docker/:/var/lib/docker:ro
 #   ports:
 #     - "8080:8080"
 #   restart: always

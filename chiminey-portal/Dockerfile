@@ -30,73 +30,49 @@ nginx \
 pwgen \
  	&& apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Get chiminey source
+RUN echo new cache
+# make chiminey user
 RUN groupadd -r nginx && adduser --home /opt/chiminey --disabled-password --ingroup nginx --gecos '' chiminey
 
-USER chiminey
+# install python prereqs
+COPY requirements.txt /opt/chiminey/requirements.txt
+RUN /usr/bin/pip install -U pip && pip install -r /opt/chiminey/requirements.txt
 
 # setup blank known_hosts for ssh connectors
 RUN mkdir /opt/chiminey/.ssh
 RUN touch /opt/chiminey/.ssh/known_hosts
-
+# create remotesys
+RUN mkdir -p /var/chiminey/remotesys
 
 # install chiminey
 ENV CHIMINEY_URL https://github.com/chiminey/chiminey.git
 ENV CHIMINEY_BRANCH docker
 RUN cd /opt/chiminey &&  git clone -b ${CHIMINEY_BRANCH} ${CHIMINEY_URL} current
 
-USER root
-COPY settings.py /opt/chiminey/current/chiminey/settings.py 
-RUN chown -R chiminey.nginx /opt/chiminey/current/chiminey/settings.py
-# create static directory
-RUN mkdir -p /opt/chiminey/current/static && chown -R chiminey.nginx /opt/chiminey/current/static
-# create docker specific settings
+WORKDIR /opt/chiminey/current
+
+COPY settings.py /opt/chiminey/current/chiminey/settings.py
+RUN mkdir -p /opt/chiminey/current/static
 RUN mkdir -p /chiminey_settings
 COPY chiminey_settings/ /chiminey_settings
-RUN chown -R chiminey.nginx /chiminey_settings
-# prep manage.py
 COPY chiminey.py /opt/chiminey/current/chiminey.py
-RUN chown -R chiminey.nginx /opt/chiminey/current/chiminey.py && chmod u+x /opt/chiminey/current/chiminey.py
-# prep wsgi wrapper
+RUN chmod u+x /opt/chiminey/current/chiminey.py
 COPY wsgi.py /opt/chiminey/current/wsgi.py
-RUN chown -R chiminey.nginx /opt/chiminey/current/wsgi.py
-# create remotesys
-RUN mkdir -p /var/chiminey/remotesys && chown -R chiminey.nginx /var/chiminey/remotesys
-
-# configure chiminey
-COPY requirements.txt /opt/chiminey/current/requirements.txt
-RUN chown -R chiminey.nginx /opt/chiminey/current
-WORKDIR /opt/chiminey/current
-RUN /usr/bin/pip install -U pip && pip install -r requirements.txt
-
-
-#RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-USER root
-
-RUN mkdir -p /var/run/gunicorn/chiminey && chown chiminey.nginx /var/run/gunicorn/chiminey
-
-# setup gunicorn
 COPY gunicorn_conf.py /opt/chiminey/current/gunicorn_conf.py
+
+RUN mkdir -p /logs /logs/beat /logs/celery
+
+# fix all ownership
+RUN chown -R chiminey.nginx /opt/chiminey/current /chiminey_settings /var/chiminey/remotesys /logs
+
+#RUN mkdir -p /var/run/gunicorn/chiminey && chown chiminey.nginx /var/run/gunicorn/chiminey
 
 EXPOSE 8000
 
-RUN mkdir -p /logs
-RUN mkdir -p /logs/beat
-RUN mkdir -p /logs/celery
-RUN chown -R chiminey:nginx /logs
-
 VOLUME /logs
-VOLUME /chiminey_settings
 VOLUME /var/chiminey/remotesys
 VOLUME /opt/chiminey/current/static
 
-#RUN mkdir /etc/service/gunicorn
-#COPY gunicorn_run.sh /etc/service/gunicorn/run
-#RUN chmod +x /etc/service/gunicorn/run
-#CMD ["/sbin/my_init"]
-
-#ENV LOG_FILE gunicorn
 ENV CELERY_SOFT_TIME_LIMIT 155200
 ENV CELERY_TIME_LIMIT 115400
 ENV CELERY_LOG_LEVEL WARN

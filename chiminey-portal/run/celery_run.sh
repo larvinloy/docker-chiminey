@@ -13,8 +13,10 @@ fi
 
 # need to sleep to make sure that db is ready before celery runs
 # there must be a better way of doing this...
+echo waiting...
 sleep 30
 
+echo starting celeryd
 soft_time_limit=${CELERY_SOFT_TIME_LIMIT:155200}
 time_limit=${CELERY_TIME_LIMIT:115400}
 log_level=${CELERY_LOG_LEVEL:WARN}
@@ -24,4 +26,3 @@ su chiminey -c "python chiminey.py celeryd_multi start w1 w2 w3 w4 -l $log_level
 
 # we don't want this process to end
 tail -f /dev/null
-	
