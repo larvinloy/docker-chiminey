@@ -32,6 +32,7 @@ celery:
     - "celery"
   volumes:
     - /etc/localtime:/etc/localtime:ro
+    - /var/run/chiminey
     #- ./src:/opt/chiminey
   environment:
     - CELERY_LOG_LEVEL=DEBUG
@@ -52,6 +53,7 @@ beat:
     - "beat"
   volumes:
     - /etc/localtime:/etc/localtime:ro
+    - /var/run/beat
     #- ./src:/opt/chiminey
   environment:
    - CHIMINEY_LOG_FILE=beat/beat.log
@@ -97,6 +99,8 @@ monitor:
     - "5555:5555"
   links:
     - redis:redis
+  volumes:
+    - /etc/localtime:/etc/localtime:ro
   environment:
     - CELERY_BROKER_URL=redis://redis:6379//
   command:

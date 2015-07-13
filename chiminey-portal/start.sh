@@ -2,7 +2,7 @@
 
 main() {
 
-	case "$1" in 
+	case "$1" in
 		celery)
 			run_celery
 			;;

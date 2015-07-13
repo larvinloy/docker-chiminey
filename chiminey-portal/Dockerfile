@@ -59,11 +59,16 @@ COPY chiminey.py /opt/chiminey/current/chiminey.py
 RUN chmod u+x /opt/chiminey/current/chiminey.py
 COPY wsgi.py /opt/chiminey/current/wsgi.py
 COPY gunicorn_conf.py /opt/chiminey/current/gunicorn_conf.py
+COPY logrotate.conf /etc/logrotate.d/chiminey
+
+RUN mkdir -p /var/run/celery
+RUN mkdir -p /var/run/beat
+
 
 RUN mkdir -p /logs /logs/beat /logs/celery
 
 # fix all ownership
-RUN chown -R chiminey.nginx /opt/chiminey/current /chiminey_settings /var/chiminey/remotesys /logs
+RUN chown -R chiminey.nginx /opt/chiminey/current /chiminey_settings /var/chiminey/remotesys /logs /var/run/celery /var/run/beat
 
 #RUN mkdir -p /var/run/gunicorn/chiminey && chown chiminey.nginx /var/run/gunicorn/chiminey
 
@@ -72,6 +77,9 @@ EXPOSE 8000
 VOLUME /logs
 VOLUME /var/chiminey/remotesys
 VOLUME /opt/chiminey/current/static
+VOLUME /var/run/celery
+VOLUME /var/run/beat
+
 
 ENV CELERY_SOFT_TIME_LIMIT 155200
 ENV CELERY_TIME_LIMIT 115400
