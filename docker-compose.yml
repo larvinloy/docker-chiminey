@@ -105,7 +105,9 @@ monitor:
     - CELERY_BROKER_URL=redis://redis:6379//
   command:
     - "--broker_api=redis://redis:6379//"
+ #   - "--broker=redis://redis:6379//"
     - "--basic_auth=chiminey:pass"
+#    - "--persistent=True"
 
 chimineystore:
   build: chiminey-portal
