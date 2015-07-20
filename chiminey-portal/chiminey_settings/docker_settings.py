@@ -174,7 +174,7 @@ CELERYBEAT_SCHEDULE = {
         "schedule": timedelta(seconds=int(os.environ.get('CELERY_POLL_TIME', 60)))
       },
     }
-
+ALLOWED_HOSTS = ['*']
 
 djcelery.setup_loader()
 

@@ -53,10 +53,15 @@ WORKDIR /opt/chiminey/current
 
 COPY settings.py /opt/chiminey/current/chiminey/settings.py
 RUN mkdir -p /opt/chiminey/current/static
+RUN mkdir -p /opt/chiminey/current/chiminey/smartconnectorscheduler/fixtures
 RUN mkdir -p /chiminey_settings
 COPY chiminey_settings/ /chiminey_settings
 COPY chiminey.py /opt/chiminey/current/chiminey.py
 RUN chmod u+x /opt/chiminey/current/chiminey.py
+
+#COPY initial_data.json /opt/chiminey/current/chiminey/smartconnectorscheduler/fixtures/initial_data.json
+#RUN chmod u+x /opt/chiminey/current/chiminey/smartconnectorscheduler/fixtures/initial_data.json
+
 COPY wsgi.py /opt/chiminey/current/wsgi.py
 COPY gunicorn_conf.py /opt/chiminey/current/gunicorn_conf.py
 COPY logrotate.conf /etc/logrotate.d/chiminey

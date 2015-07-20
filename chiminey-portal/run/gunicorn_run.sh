@@ -23,6 +23,7 @@ sleep 10
 
 export PYTHON_EGG_CACHE=/opt/chiminey/shared/egg-cache
 
+# TODO: migrate should not run every time the server is restarted, as initial_data will be rewritten too
 su chiminey -c "python chiminey.py syncdb --noinput --migrate"
 su chiminey -c "python chiminey.py collectstatic --noinput"
 chmod +r -R /opt/chiminey/current/static
