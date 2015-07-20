@@ -18,7 +18,7 @@ django-jasmine==0.4.1
 django-mustachejs==0.6.0
 django-nose
 django-registration==1.0 #apt: 1.0
--e git+https://github.com/grischa/django-tastypie.git@testing-mytardis-deployment#egg=django-tastypie
+#-e git+https://github.com/grischa/django-tastypie.git@testing-mytardis-deployment#egg=django-tastypie
 django-user-agents==0.2.2
 ecdsa==0.11 #apt: 0.10
 #elementtree
@@ -65,6 +65,7 @@ boto==2.38.0
 django-celery-with-redis
 redis==2.10.3
 hiredis==0.2.0
+django-tastypie==0.9.15
 
 
 

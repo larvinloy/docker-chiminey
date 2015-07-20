@@ -13,7 +13,7 @@ DATABASES = {
     },
 }
 
-DEBUG = os.environ.get('DJANGO_DEBUG', 'False')
+DEBUG = bool(int(os.environ.get('DJANGO_DEBUG', 0)))
 TEMPLATE_DEBUG = DEBUG
 
 STAGING_PATH = "/staging"

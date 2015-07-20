@@ -13,11 +13,11 @@ chiminey:
    - /etc/localtime:/etc/localtime:ro
    #- ./src:/opt/chiminey
   environment:
-   - APIHOST=http://118.138.241.38/
+   - APIHOST=http://131.170.250.72/
    - GUNICORN_LOG_LEVEL=WARN
    - CHIMINEY_LOG_FILE=chiminey.log
    - CELERY_POLL_TIME=10
-   - DJANGO_DEBUG=False
+   - DJANGO_DEBUG=0
 
 celery:
   restart: always
@@ -38,7 +38,7 @@ celery:
     - CELERY_LOG_LEVEL=DEBUG
     - CHIMINEY_LOG_FILE=celery/celery.log
     - CELERY_POLL_TIME=10
-    - DJANGO_DEBUG=False
+    - DJANGO_DEBUG=0
 
 beat:
   restart: always
@@ -58,7 +58,7 @@ beat:
   environment:
    - CHIMINEY_LOG_FILE=beat/beat.log
    - CELERY_POLL_TIME=10
-   - DJANGO_DEBUG=False
+   - DJANGO_DEBUG=0
 
 nginx:
   restart: always
@@ -120,19 +120,21 @@ dbstore:
   image: postgres
   volumes:
    - /var/lib/postgresql
-  command: true
+  command: 
+   - "true"
 
 redisstore:
   image: redis
   volumes:
     - /data
-  command: true
+  command: 
+    - "true"
 
 logsstore:
   build: chiminey-portal
   volumes:
     - /logs
-  command: true
+  command: "true"
 
 elasticsearch:
  image: denibertovic/elasticsearch
