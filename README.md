@@ -17,7 +17,7 @@ Usage
 ```
 
 After a while, the location http://127.0.0.1 will point at the mytardis portal.
-To watch the celery workers go to: http://127.0.0.1:5555
+To watch the celery workers go to: http://127.0.0.1:8080
 
 4. To perform initial setup:
 

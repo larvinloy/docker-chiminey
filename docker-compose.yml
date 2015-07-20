@@ -96,7 +96,7 @@ monitor:
   restart: always
   build: chiminey-monitor
   ports:
-    - "5555:5555"
+    - "8080:5555"
   links:
     - redis:redis
   volumes:
