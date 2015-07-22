@@ -64,7 +64,9 @@ RUN chmod u+x /opt/chiminey/current/chiminey.py
 
 COPY wsgi.py /opt/chiminey/current/wsgi.py
 COPY gunicorn_conf.py /opt/chiminey/current/gunicorn_conf.py
-COPY logrotate.conf /etc/logrotate.d/chiminey
+
+COPY logrotate_chiminey.conf logrotate_celery.conf logrotate_beat.conf /
+RUN chmod 644 /logrotate_chiminey.conf /logrotate_celery.conf /logrotate_beat.conf
 
 RUN mkdir -p /var/run/celery
 RUN mkdir -p /var/run/beat

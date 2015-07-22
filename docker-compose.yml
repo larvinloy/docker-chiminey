@@ -13,7 +13,7 @@ chiminey:
    - /etc/localtime:/etc/localtime:ro
    #- ./src:/opt/chiminey
   environment:
-   - APIHOST=http://131.170.250.72/
+   - APIHOST=http://118.138.241.38/
    - GUNICORN_LOG_LEVEL=WARN
    - CHIMINEY_LOG_FILE=chiminey.log
    - CELERY_POLL_TIME=10
@@ -96,7 +96,7 @@ monitor:
   restart: always
   build: chiminey-monitor
   ports:
-    - "5555:5555"
+    - "8080:5555"
   links:
     - redis:redis
   volumes:
@@ -120,14 +120,14 @@ dbstore:
   image: postgres
   volumes:
    - /var/lib/postgresql
-  command: 
+  command:
    - "true"
 
 redisstore:
   image: redis
   volumes:
     - /data
-  command: 
+  command:
     - "true"
 
 logsstore:
