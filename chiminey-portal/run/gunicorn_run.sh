@@ -29,7 +29,7 @@ su chiminey -c "python chiminey.py collectstatic --noinput"
 chmod +r -R /opt/chiminey/current/static
 
 
-log_level=${GUNICORN_LOG_LEVEL:DEBUG}
+log_level=${GUNICORN_LOG_LEVEL:WARN}
 port=${GUNICORN_PORT:8000}
 
 

@@ -1,0 +1,6 @@
+certs/
+src/
+logs/
+data/
+*.pyc
+

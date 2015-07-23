@@ -47,12 +47,9 @@ INSTALLED_APPS = (
 
 APIHOST = os.environ.get('APIHOST', 'http://127.0.0.1')
 
-
 BROKER_URL = 'redis://redis:6379/0'
 CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 REDIS_HOST = "redis"
-
-
 
 CSRACK_USERDATA = """#!/bin/bash
 chmod 700 /etc/sudoers
@@ -71,8 +68,9 @@ VM_IMAGES = {
               'amazon': {'placement': '', 'vm_image': "ami-9352c1a9", 'user_data': ''}}
 
 
-LOGGER_LEVEL = "DEBUG"
+ALLOWED_HOSTS = ['*']
 
+LOGGER_LEVEL = os.environ.get('LOGGER_LEVEL', 'WARN')
 
 LOGGING = {
     'version': 1,
@@ -165,16 +163,11 @@ LOGGING = {
 
 
 CELERYBEAT_SCHEDULE = {
-    # "test": {
-    #     "task": "smartconnectorscheduler.test",
-    #     "schedule": timedelta(seconds=15),
-    # },
     "run_contexts": {
         "task": "smartconnectorscheduler.run_contexts",
         "schedule": timedelta(seconds=int(os.environ.get('CELERY_POLL_TIME', 60)))
       },
     }
-ALLOWED_HOSTS = ['*']
 
 djcelery.setup_loader()
 

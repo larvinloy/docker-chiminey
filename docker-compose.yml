@@ -10,14 +10,15 @@ chiminey:
   command:
    - "gunicorn"
   volumes:
-   - /etc/localtime:/etc/localtime:ro#
+   - /etc/localtime:/etc/localtime:ro
    - ./src:/opt/chiminey/current
   environment:
    - APIHOST=http://118.138.241.38/
-   - GUNICORN_LOG_LEVEL=WARN
+   - GUNICORN_LOG_LEVEL=DEBUG
    - CHIMINEY_LOG_FILE=chiminey.log
    - CELERY_POLL_TIME=10
    - DJANGO_DEBUG=0
+   - LOGGER_LEVEL=DEBUG
 
 celery:
   restart: always
@@ -39,6 +40,7 @@ celery:
     - CHIMINEY_LOG_FILE=celery/celery.log
     - CELERY_POLL_TIME=10
     - DJANGO_DEBUG=0
+    - LOGGER_LEVEL=DEBUG
 
 beat:
   restart: always
@@ -59,6 +61,7 @@ beat:
    - CHIMINEY_LOG_FILE=beat/beat.log
    - CELERY_POLL_TIME=10
    - DJANGO_DEBUG=0
+   - LOGGER_LEVEL=DEBUG
 
 nginx:
   restart: always
@@ -66,6 +69,7 @@ nginx:
   ports:
    - "80:80"
    - "443:443"
+   - "5601:5601"
   volumes_from:
    - chiminey
    - logsstore
@@ -74,6 +78,7 @@ nginx:
     - /etc/localtime:/etc/localtime:ro
   links:
    - chiminey:chiminey
+   - kibana:kibana
 #    - monitor:monitor
 
 db:
@@ -163,16 +168,16 @@ logstash:
       #- "9292:9292"
   restart: always
 
-# kibana:
-#   image: denibertovic/kibana
-#   links:
-#       - elasticsearch
-#   volumes:
-#       - ./logs/kibana:/logs
-#       - ./config-examples/kibana:/kibana/config
-#   ports:
-#       - "5601:5601"
-#   restart: always
+kibana:
+  image: denibertovic/kibana
+  links:
+      - elasticsearch
+  volumes:
+      - ./logs/kibana:/logs
+      - ./config-examples/kibana:/kibana/config
+  # ports:
+  #     - "5601:5601"
+  restart: always
 
 # cadvisor:
 #   image: google/cadvisor:latest
