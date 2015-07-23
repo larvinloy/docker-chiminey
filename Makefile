@@ -5,4 +5,4 @@ certs:
 	@if [ ! -d certs  ]; then \
 		mkdir certs; \
 	fi
-	cd certs && openssl req -x509 -batch -nodes -newkey rsa:2048 -keyout 118.138.241.38.key -out 118.138.241.38.crt; \
+	cd certs && openssl req -x509 -nodes -newkey rsa:2048 -keyout chiminey.key -out chiminey.crt; \
