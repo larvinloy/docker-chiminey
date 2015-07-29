@@ -4,6 +4,7 @@ chiminey:
   links:
    - db:db
    - redis:redis
+   - nginxamb:nginxamb
   volumes_from:
    - chimineystore
    - logsstore
@@ -11,9 +12,9 @@ chiminey:
    - "gunicorn"
   volumes:
    - /etc/localtime:/etc/localtime:ro
-   - ./src:/opt/chiminey/current
+   #- ./src:/opt/chiminey/current
   environment:
-   - APIHOST=http://118.138.241.38/
+   - APIHOST=http://nginxamb/
    - GUNICORN_LOG_LEVEL=DEBUG
    - CHIMINEY_LOG_FILE=chiminey.log
    - CELERY_POLL_TIME=10
@@ -66,10 +67,6 @@ beat:
 nginx:
   restart: always
   build: chiminey-nginx
-  ports:
-   - "80:80"
-   - "443:443"
-   - "5601:5601"
   volumes_from:
    - chiminey
    - logsstore
@@ -80,6 +77,21 @@ nginx:
    - chiminey:chiminey
    - kibana:kibana
 #    - monitor:monitor
+
+
+nginxamb:
+  restart: always
+  image: cpuguy83/docker-grand-ambassador
+  ports:
+   - "80:80"
+   - "443:443"
+   - "5601:5601"
+  volumes:
+   - /var/run/docker.sock:/var/run/docker.sock
+  environment:
+   - RABBITMQ_PASS=pass
+  command: "-name dockerchiminey_nginx_1"
+
 
 db:
   restart: always
