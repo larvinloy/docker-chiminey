@@ -10,6 +10,8 @@ Usage
 
 2. Clone the dockerized chiminey repository
 
+3. Change your working directory
+
 ```
     git clone git@bitbucket.org:fnargle/docker-chiminey.git
 ```
