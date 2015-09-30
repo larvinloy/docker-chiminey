@@ -14,12 +14,17 @@ Usage
     git clone git@bitbucket.org:fnargle/docker-chiminey.git
 ```
 
-3. Review the passwords in the enviornment sections in the docker-compose.yml
-
-4. Change your working directory to the cloned repository and then start the system
+3. Change your working directory
 
 ```
     cd docker-chiminey
+```
+
+4. Review the passwords in the enviornment sections in the docker-compose.yml
+
+5.  Start the system
+
+```
     make
     docker-compose up -d 
 ```
@@ -28,7 +33,7 @@ Usage
 After a while, the location http://127.0.0.1 will point at the Chiminey portal.
 To watch the celery workers go to: http://127.0.0.1:8080
 
-4. To perform initial setup:
+6. To perform initial setup:
 
 ```
     docker exec -ti dockerchiminey_chiminey_1 python chiminey.py createsuperuser --user=root
