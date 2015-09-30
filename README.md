@@ -9,22 +9,18 @@ Usage
 1. Install docker and docker-compose (http://docs.docker.com/compose)
 
 2. Clone the dockerized chiminey repository
-
+ ```
+     git clone git@bitbucket.org:fnargle/docker-chiminey.git
+ ```
+ 
 3. Change your working directory
-
-```
-    git clone git@bitbucket.org:fnargle/docker-chiminey.git
-```
-
-3. Change your working directory
-
-```
+ ```
     cd docker-chiminey
-```
-
+ ```
+ 
 4. Review the passwords in the enviornment sections in the docker-compose.yml
-
-5.  Start the system
+ 
+5. Configure and start the system
 
 ```
     make
@@ -35,7 +31,7 @@ Usage
 After a while, the location http://127.0.0.1 will point at the Chiminey portal.
 To watch the celery workers go to: http://127.0.0.1:8080
 
-6. To perform initial setup:
+To perform initial setup:
 
 ```
     docker exec -ti dockerchiminey_chiminey_1 python chiminey.py createsuperuser --user=root
