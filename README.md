@@ -8,15 +8,24 @@ Usage
 
 1. Install docker and docker-compose (http://docs.docker.com/compose)
 
-2. Review the passwords in the enviornment sections in the docker-compose.xml
-
-3. To start the system:
+2. Clone the dockerized chiminey repository
 
 ```
-    docker-compose up -d
+    git clone git@bitbucket.org:fnargle/docker-chiminey.git
 ```
 
-After a while, the location http://127.0.0.1 will point at the mytardis portal.
+3. Review the passwords in the enviornment sections in the docker-compose.yml
+
+4. Change your working directory to the cloned repository and then start the system
+
+```
+    cd docker-chiminey
+    make
+    docker-compose up -d 
+```
+
+
+After a while, the location http://127.0.0.1 will point at the Chiminey portal.
 To watch the celery workers go to: http://127.0.0.1:8080
 
 4. To perform initial setup:
@@ -55,7 +64,3 @@ To setup the examples from the tutorials at http://chiminey.readthedocs.org
 ```
 
 This project is working reasonably well as a demo, but IS NOT FOR PRODUCTION USE
-
-
-
-
