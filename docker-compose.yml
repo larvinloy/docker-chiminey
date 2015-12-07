@@ -95,7 +95,7 @@ nginxamb:
 
 db:
   restart: always
-  image: postgres
+  image: postgres:9.4.5
   volumes_from:
     - dbstore
   environment:
@@ -103,7 +103,7 @@ db:
 
 redis:
   restart: always
-  image: redis
+  image: redis:3.0.5
   volumes_from:
     - redisstore
   expose:
@@ -134,14 +134,14 @@ chimineystore:
     - "store"
 
 dbstore:
-  image: postgres
+  image: postgres:9.4.5
   volumes:
    - /var/lib/postgresql
   command:
    - "true"
 
 redisstore:
-  image: redis
+  image: redis:3.0.5
   volumes:
     - /data
   command:
