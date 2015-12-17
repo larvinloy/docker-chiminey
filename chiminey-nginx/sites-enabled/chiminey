@@ -57,7 +57,7 @@ server {
 
     ssl_certificate_key /opt/certs/chiminey.key;
     ssl_certificate /opt/certs/chiminey.crt;
-    ssl_protocols SSLv3 TLSv1 TLSv1.1 TLSv1.2;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
     ssl_ciphers HIGH:!aNull:!MD5;
 
     client_max_body_size 4G;
