@@ -8,6 +8,17 @@ upstream kibana {
     server kibana:5601 fail_timeout=0;
 }
 
+upstream cadvisor {
+    ip_hash;
+    server cadvisor:8080 fail_timeout=0;
+}
+
+upstream monitor {
+    ip_hash;
+    server monitor:5555 fail_timeout=0;
+
+}
+
 server {
 
     listen 80;
@@ -113,3 +124,40 @@ server {
         }
     }
 }
+
+server {
+    listen 8080;
+    access_log /logs/nginx_access.log;
+    error_log /logs/nginx_error.log;
+
+    # Password protected end points
+    location / {
+        proxy_pass http://cadvisor;
+        proxy_read_timeout 90;
+        limit_except GET {
+          proxy_pass http://cadvisor;
+          auth_basic "Restricted";
+          auth_basic_user_file /etc/nginx/conf.d/kibana.htpasswd;
+        }
+    } 
+}
+
+server {
+
+    listen 5555;
+
+    access_log /logs/nginx_access.log;
+    error_log /logs/nginx_error.log;
+
+  # Password protected end points
+    location / {
+        proxy_pass http://monitor;
+        proxy_read_timeout 90;
+        limit_except GET {
+          proxy_pass http://monitor;
+          auth_basic "Restricted";
+          auth_basic_user_file /etc/nginx/conf.d/kibana.htpasswd;
+        }
+    }
+}
+

@@ -73,11 +73,17 @@ nginx:
   volumes:
     #- ./certs:/opt/certs:ro
     - /etc/localtime:/etc/localtime:ro
+  expose:
+    - 5601
+    - 8080
+    - 80
+    - 443
+    - 5555
   links:
    - chiminey:chiminey
    - kibana:kibana
-#    - monitor:monitor
-
+   - cadvisor:cadvisor
+   - monitor:monitor
 
 nginxamb:
   restart: always
@@ -86,6 +92,8 @@ nginxamb:
    - "80:80"
    - "443:443"
    - "5601:5601"
+   - "8080:8080"
+   - "5555:5555"
   volumes:
    - /var/run/docker.sock:/var/run/docker.sock
   environment:
@@ -107,13 +115,13 @@ redis:
   volumes_from:
     - redisstore
   expose:
-    - "6379"
+    - 6379
 
 monitor:
   restart: always
   build: chiminey-monitor
-  ports:
-    - "8080:5555"
+  expose:
+    - 5555
   links:
     - redis:redis
   volumes:
@@ -160,8 +168,8 @@ elasticsearch:
      - ./config-examples/elasticsearch:/opt/elasticsearch/config
      - ./data/elasticsearch:/opt/elasticsearch/data
  #ports:
-     #- "9200:9200"
-     #- "9300:9300"
+ #    - "9200:9200"
+ #    - "9300:9300"
  restart: always
 
 logstash:
@@ -175,9 +183,9 @@ logstash:
   volumes_from:
       - logsstore
   #ports:
-      #- "514:514"
-      #- "5043:5043"
-      #- "9292:9292"
+  #    - "514:514"
+  #    - "5043:5043"
+  #    - "9292:9292"
   restart: always
 
 kibana:
@@ -187,19 +195,25 @@ kibana:
   volumes:
       - ./logs/kibana:/logs
       - ./config-examples/kibana:/kibana/config
-  # ports:
-  #     - "5601:5601"
+  expose:
+      - 5601
   restart: always
 
-# cadvisor:
-#   image: google/cadvisor:latest
-#   volumes:
-#     - /:/rootfs:ro
-#     - /var/run:/var/run:rw
-#     - /sys:/sys:ro
-#     - /var/lib/docker/:/var/lib/docker:ro
-#   ports:
-#     - "8080:8080"
-#   restart: always
+cadvisor:
+   image: google/cadvisor:latest
+   privileged: true
+   volumes:
+     - /:/rootfs:ro
+     - /var/run:/var/run:rw
+     - /sys:/sys:ro
+     - /var/lib/docker/:/var/lib/docker:ro
+     - /cgroup:/cgroup:ro
+   #command:
+     #- '-storage_driver="elasticsearch"' 
+     #- "-alsologtostderr=true"
+     #- '-storage_driver_es_host="https://elasticsearch:9200"'
+   expose:
+     - 8080
+   restart: always
 
 
