@@ -16,7 +16,7 @@ RUN chmod 700 /opt/certs/chiminey.key /opt/certs/chiminey.crt
 
 RUN groupadd -r nginx && adduser --home /opt/chiminey --disabled-password --ingroup nginx --gecos '' chiminey
 
-EXPOSE 443 80
+#EXPOSE 443 80
 
 VOLUME /var/log
 VOLUME /logs

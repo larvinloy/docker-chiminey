@@ -1,5 +1,5 @@
 chiminey:
-  restart: always
+  restart: on-failure:5
   build: chiminey-portal
   links:
    - db:db
@@ -12,7 +12,6 @@ chiminey:
    - "gunicorn"
   volumes:
    - /etc/localtime:/etc/localtime:ro
-   #- ./src:/opt/chiminey/current
   environment:
    - APIHOST=http://nginxamb/
    - GUNICORN_LOG_LEVEL=DEBUG
@@ -22,7 +21,7 @@ chiminey:
    - LOGGER_LEVEL=DEBUG
 
 celery:
-  restart: always
+  restart: on-failure:5
   build: chiminey-portal
   links:
    - db:db
@@ -35,7 +34,6 @@ celery:
   volumes:
     - /etc/localtime:/etc/localtime:ro
     - /var/run/chiminey
-#    - ./src:/opt/chiminey/current
   environment:
     - CELERY_LOG_LEVEL=DEBUG
     - CHIMINEY_LOG_FILE=celery/celery.log
@@ -44,7 +42,7 @@ celery:
     - LOGGER_LEVEL=DEBUG
 
 beat:
-  restart: always
+  restart: on-failure:5
   build: chiminey-portal
   links:
    - db:db
@@ -57,7 +55,6 @@ beat:
   volumes:
     - /etc/localtime:/etc/localtime:ro
     - /var/run/beat
-#    - ./src:/opt/chiminey/current
   environment:
    - CHIMINEY_LOG_FILE=beat/beat.log
    - CELERY_POLL_TIME=10
@@ -65,7 +62,7 @@ beat:
    - LOGGER_LEVEL=DEBUG
 
 nginx:
-  restart: always
+  restart: on-failure:5
   build: chiminey-nginx
   volumes_from:
    - chiminey
@@ -86,23 +83,22 @@ nginx:
    - monitor:monitor
 
 nginxamb:
-  restart: always
+  restart: on-failure:5
   image: cpuguy83/docker-grand-ambassador
   ports:
-   - "80:80"
-   - "443:443"
-   - "5601:5601"
-   - "8080:8080"
-   - "5555:5555"
+   - 80:80
+   - 443:443
+   - 5601:5601
+   - 8080:8080
+   - 5555:5555
   volumes:
    - /var/run/docker.sock:/var/run/docker.sock
   environment:
    - RABBITMQ_PASS=pass
   command: "-name dockerchiminey_nginx_1"
 
-
 db:
-  restart: always
+  restart: on-failure:5
   image: postgres:9.4.5
   volumes_from:
     - dbstore
@@ -110,7 +106,7 @@ db:
     - POSTGRES_PASSWORD=mysecretpassword
 
 redis:
-  restart: always
+  restart: on-failure:5
   image: redis:3.0.5
   volumes_from:
     - redisstore
@@ -118,7 +114,7 @@ redis:
     - 6379
 
 monitor:
-  restart: always
+  restart: on-failure:5
   build: chiminey-monitor
   expose:
     - 5555
@@ -162,17 +158,15 @@ logsstore:
   command: "true"
 
 elasticsearch:
+ restart: on-failure:5
  image: denibertovic/elasticsearch
  volumes:
      - ./logs/elasticsearch:/opt/elasticsearch/logs
      - ./config-examples/elasticsearch:/opt/elasticsearch/config
      - ./data/elasticsearch:/opt/elasticsearch/data
- #ports:
- #    - "9200:9200"
- #    - "9300:9300"
- restart: always
 
 logstash:
+  restart: on-failure:5
   image: denibertovic/logstash
   links:
       - elasticsearch
@@ -182,13 +176,9 @@ logstash:
       - ./logs/logstash:/opt/logs
   volumes_from:
       - logsstore
-  #ports:
-  #    - "514:514"
-  #    - "5043:5043"
-  #    - "9292:9292"
-  restart: always
 
 kibana:
+  restart: on-failure:5
   image: denibertovic/kibana
   links:
       - elasticsearch
@@ -197,9 +187,9 @@ kibana:
       - ./config-examples/kibana:/kibana/config
   expose:
       - 5601
-  restart: always
 
 cadvisor:
+   restart: on-failure:5
    image: google/cadvisor:latest
    privileged: true
    volumes:
@@ -214,6 +204,3 @@ cadvisor:
      #- '-storage_driver_es_host="https://elasticsearch:9200"'
    expose:
      - 8080
-   restart: always
-
-
