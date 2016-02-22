@@ -4,7 +4,7 @@ import os
 
 DATABASES = {
     'default': {
-        'ENGINE':'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': os.environ.get('DB_ENV_POSTGRES_PASSWORD', ''),
@@ -31,12 +31,12 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    #'django.contrib.markup',
+    # 'django.contrib.markup',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'storages',
     'djcelery',
-    #'djkombu',
+    # 'djkombu',
     'tastypie',
     'widget_tweaks',
     'httpretty',
@@ -170,5 +170,3 @@ CELERYBEAT_SCHEDULE = {
     }
 
 djcelery.setup_loader()
-
-
