@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker exec -it dockerchiminey_chiminey_1 /bin/bash
