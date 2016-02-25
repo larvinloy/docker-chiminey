@@ -23,9 +23,6 @@ function clean_up {
 
 }
 
-clean_up
-
-
 trap clean_up SIGTERM
 
 echo beating...
@@ -33,6 +30,5 @@ echo beating...
 #su -m chiminey -c "python chiminey.py celerybeat --logfile=/logs/beat.log"
 su -m chiminey -c "python chiminey.py celerybeat --logfile=/logs/beat/beat.log --pidfile=/var/run/beat/beat.pid --schedule=/logs/beat/celerybeat-schedule >> /logs/beat/beat.log 2>&1"
 
-clean_up
-
 echo beat is done...
+exit 0

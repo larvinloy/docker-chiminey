@@ -53,6 +53,10 @@ RUN cd /opt/chiminey &&  git clone -b ${CHIMINEY_BRANCH} ${CHIMINEY_URL} current
 WORKDIR /opt/chiminey/current
 
 COPY settings.py /opt/chiminey/current/chiminey/settings.py
+
+COPY /waitforit.sh /opt/chiminey/current/waitforit.sh
+RUN chmod u+x /opt/chiminey/current/waitforit.sh
+
 RUN mkdir -p /opt/chiminey/current/static
 RUN mkdir -p /opt/chiminey/current/chiminey/smartconnectorscheduler/fixtures
 RUN mkdir -p /chiminey_settings
@@ -66,26 +70,33 @@ RUN chmod u+x /opt/chiminey/current/chiminey.py
 COPY wsgi.py /opt/chiminey/current/wsgi.py
 COPY gunicorn_conf.py /opt/chiminey/current/gunicorn_conf.py
 
-# FIXME: Disabled logrotate as may be breaking elasticsearch
-#COPY logrotate_chiminey.conf logrotate_celery.conf logrotate_beat.conf /
-#RUN chmod 644 /logrotate_chiminey.conf /logrotate_celery.conf /logrotate_beat.conf
+# FIXME: Disable logrotate as may be breaking elasticsearch
+COPY logrotate_chiminey.conf logrotate_celery.conf logrotate_beat.conf /
+RUN chmod 644 /logrotate_chiminey.conf /logrotate_celery.conf /logrotate_beat.conf
 
 RUN mkdir -p /var/run/celery
 RUN mkdir -p /var/run/beat
-RUN mkdir -p /logs /logs/beat /logs/celery
+RUN mkdir -p /logs  /logs/celery # /logs/beat
 
 # fix all ownership
 RUN chown -R chiminey.nginx /opt/chiminey/current /chiminey_settings /var/chiminey/remotesys /logs /var/run/celery /var/run/beat
 
 #RUN mkdir -p /var/run/gunicorn/chiminey && chown chiminey.nginx /var/run/gunicorn/chiminey
 
+#COPY gherkin-languages.json /usr/local/lib/python2.7/site-packages/gherkin3/gherkin-languages.json
+
 EXPOSE 8000
+
+# forward request and error logs to docker log collector
+# https://serverfault.com/questions/599103/make-a-docker-application-write-to-stdout
+# RUN ln -sf /dev/stdout /logs/beat/beat.log
+# RUN ln -sf /dev/stderr /logs/beat/error.log
 
 VOLUME /logs
 VOLUME /var/chiminey/remotesys
 VOLUME /opt/chiminey/current/static
 VOLUME /var/run/celery
-VOLUME /var/run/beat
+#VOLUME /var/run/beat
 
 
 ENV CELERY_SOFT_TIME_LIMIT 155200
@@ -107,5 +118,6 @@ COPY celery_conf.py /opt/chiminey/current/chiminey/celery_conf.py
 COPY start.sh /
 RUN chmod u+x /start.sh
 
-ENTRYPOINT ["/start.sh"]
+# http://engineeringblog.yelp.com/2016/01/dumb-init-an-init-for-docker.html
+ENTRYPOINT ["dumb-init", "/start.sh"]
 CMD ["gunicorn"]

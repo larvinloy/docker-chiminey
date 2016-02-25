@@ -20,7 +20,7 @@ STAGING_PATH = "/staging"
 DEFAULT_STORAGE_BASE_DIR = "/store"
 
 OUR_APPS = ('chiminey.smartconnectorscheduler',
-    'chiminey.simpleui')
+                'chiminey.simpleui')
 
 INSTALLED_APPS = (
     'django_extensions',
@@ -60,11 +60,11 @@ echo changedsudo
 
 # According to Nectar Image Catalog 30/6/15
 VM_IMAGES = {
-              #'csrack': {'placement': None, 'vm_image': "ami-00000004", 'user_data': CSRACK_USERDATA},
-              'csrack': {'placement': None, 'vm_image': "ami-00000009", 'user_data': CSRACK_USERDATA}, # centos 7
-              #'nectar': {'placement': None, 'vm_image': "ami-00001c06", 'user_data': ''},
-              #'nectar': {'placement': None, 'vm_image': "ami-00001e2b", 'user_data': ''},
-              'nectar': {'placement': 'monash-01', 'vm_image': "ami-000022b0", 'user_data': ''}, # centos 7
+              # 'csrack': {'placement': None, 'vm_image': "ami-00000004", 'user_data': CSRACK_USERDATA},
+              'csrack': {'placement': None, 'vm_image': "ami-00000009", 'user_data': CSRACK_USERDATA},  # centos 7
+              # 'nectar': {'placement': None, 'vm_image': "ami-00001c06", 'user_data': ''},
+              # 'nectar': {'placement': None, 'vm_image': "ami-00001e2b", 'user_data': ''},
+              'nectar': {'placement': 'monash-01', 'vm_image': "ami-000022b0", 'user_data': ''},  # centos 7
               'amazon': {'placement': '', 'vm_image': "ami-9352c1a9", 'user_data': ''}}
 
 
@@ -75,91 +75,109 @@ LOGGER_LEVEL = os.environ.get('LOGGER_LEVEL', 'WARN')
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+
     'formatters': {
+
         'timestamped': {
             'format': ' [%(asctime)s: %(levelname)s/%(processName)s] %(message)s'
-           # 'format': '%(asctime)s-%(filename)s-%(lineno)s-%(levelname)s: %(message)s'
+            # 'format': '%(asctime)s-%(filename)s-%(lineno)s-%(levelname)s: %(message)s'
         },
+
     },
 
     'handlers': {
-    'file': {
-    'class': 'logging.handlers.RotatingFileHandler',
-    'filename': os.path.join("/logs", os.environ.get('CHIMINEY_LOG_FILE', 'chiminey.log')),
-    'formatter': 'timestamped',
-            'maxBytes': 1024 * 1024 * 100,  # 100 mb
-            'backupCount': 4
+
+        'default': {
+            'class':'logging.StreamHandler',
             },
+
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': os.path.join("/logs", os.environ.get('CHIMINEY_LOG_FILE', 'chiminey.log')),
+            'formatter': 'timestamped',
+            # 'maxBytes': 1024 * 1024 * 100,  # 100 mb
+            # 'backupCount': 4
+            },
+
+        'rotatingfile': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join("/logs", os.environ.get('CHIMINEY_LOG_FILE', 'chiminey.log')),
+            'formatter': 'timestamped',
+                         'maxBytes': 1024 * 1024 * 100,  # 100 mb
+                         'backupCount': 4
+            },
+
+
     },
+
     'loggers': {
 
-    'chiminey': {
-    'level': LOGGER_LEVEL,
-    'handlers': ['file'],
-    },
-    'chiminey.smartconnectorscheduler': {
-    'level': LOGGER_LEVEL,
-    'handlers': ['file'],
-    },
-    'chiminey.sshconnection': {
-    'level': LOGGER_LEVEL,
-    'handlers': ['file'],
-    },
-    'chiminey.platform': {
-    'level': LOGGER_LEVEL,
-    'handlers': ['file'],
-    },
-    'chiminey.cloudconnection': {
-    'level': LOGGER_LEVEL,
-    'handlers': ['file'],
-    },
-    'chiminey.reliabilityframework': {
-    'level': LOGGER_LEVEL,
-    'handlers': ['file'],
-    },
-    'chiminey.simpleui': {
-    'level': LOGGER_LEVEL,
-    'handlers': ['file'],
-    },
-    'chiminey.mytardis': {
-    'level': LOGGER_LEVEL,
-    'handlers': ['file'],
-    },
-    'chiminey.simpleui.wizard': {
-    'level': LOGGER_LEVEL,
-    'handlers': ['file'],
-    },
-    'chiminey.storage': {
-    'level': LOGGER_LEVEL,
-    'handlers': ['file'],
-    },
-    'chiminey.sshconnector': {
-    'level': LOGGER_LEVEL,
-    'handlers': ['file'],
-    },
-    'chiminey.core': {
-    'level': LOGGER_LEVEL,
-    'handlers': ['file'],
-    },
-    'chiminey.smartconnectorscheduler.tasks': {
-    'level': LOGGER_LEVEL,
-    'handlers': ['file'],
-    },
-    'celery.task': {
-    'level': 'ERROR',
-    'handlers': ['file'],
-    },
-    'django.db.backends': {
-    'level': 'ERROR',
-    'handlers': ['file'],
-    },
-    'south': {
-     'level': LOGGER_LEVEL,
-     'handlers': ['file'],
-
-    },
+        'chiminey': {
+            'level': LOGGER_LEVEL,
+            'handlers': ['default', 'file'],
+        },
+        'chiminey.smartconnectorscheduler': {
+            'level': LOGGER_LEVEL,
+            'handlers': ['default', 'file'],
+        },
+        'chiminey.sshconnection': {
+            'level': LOGGER_LEVEL,
+            'handlers': ['default', 'file'],
+            },
+        'chiminey.platform': {
+            'level': LOGGER_LEVEL,
+            'handlers': ['default', 'file'],
+            },
+        'chiminey.cloudconnection': {
+            'level': LOGGER_LEVEL,
+            'handlers': ['default', 'file'],
+            },
+        'chiminey.reliabilityframework': {
+            'level': LOGGER_LEVEL,
+            'handlers': ['default', 'file'],
+            },
+        'chiminey.simpleui': {
+            'level': LOGGER_LEVEL,
+            'handlers': ['default', 'file'],
+            },
+        'chiminey.mytardis': {
+            'level': LOGGER_LEVEL,
+            'handlers': ['default', 'file'],
+            },
+        'chiminey.simpleui.wizard': {
+            'level': LOGGER_LEVEL,
+            'handlers': ['default', 'file'],
+            },
+        'chiminey.storage': {
+            'level': LOGGER_LEVEL,
+            'handlers': ['default', 'file'],
+            },
+        'chiminey.sshconnector': {
+            'level': LOGGER_LEVEL,
+            'handlers': ['default', 'file'],
+            },
+        'chiminey.core': {
+            'level': LOGGER_LEVEL,
+            'handlers': ['default', 'file'],
+            },
+        'chiminey.smartconnectorscheduler.tasks': {
+            'level': LOGGER_LEVEL,
+            'handlers': ['default', 'file'],
+            },
+        'celery.task': {
+            'level': 'ERROR',
+            'handlers': ['default', 'file'],
+            },
+        'django.db.backends': {
+            'level': 'ERROR',
+            'handlers': ['default', 'file'],
+            },
+        'south': {
+            'level': LOGGER_LEVEL,
+            'handlers': ['default', 'file'],
+            },
     }
-    }
+}
 
 
 CELERYBEAT_SCHEDULE = {

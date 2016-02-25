@@ -81,9 +81,9 @@ nginx:
     - 5555
   links:
    - chiminey:chiminey
-   #- kibana:kibana
-   - cadvisor:cadvisor
    - monitor:monitor
+#   - cadvisor:cadvisor
+# - kibana:kibana
 
 nginxamb:
   restart: on-failure:5
@@ -192,21 +192,21 @@ logsstore:
 #       - ./logs/kibana:/logs
 #       - ./config-examples/kibana:/kibana/config
 #   expose:
-#       - 5601
 
-cadvisor:
-   restart: on-failure:5
-   image: google/cadvisor:latest
-   privileged: true
-   volumes:
-     - /:/rootfs:ro
-     - /var/run:/var/run:rw
-     - /sys:/sys:ro
-     - /var/lib/docker/:/var/lib/docker:ro
-     - /cgroup:/cgroup:ro
-   #command:
-     #- '-storage_driver="elasticsearch"'
-     #- "-alsologtostderr=true"
-     #- '-storage_driver_es_host="https://elasticsearch:9200"'
-   expose:
-     - 8080
+# #       - 5601
+# cadvisor:
+#    restart: on-failure:5
+#    privileged: true
+#    image: google/cadvisor:latest
+#    volumes:
+#      - /:/rootfs:ro
+#      - /var/run:/var/run:rw
+#      - /sys:/sys:ro
+#      - /var/lib/docker/:/var/lib/docker:ro
+#      - /cgroup:/cgroup:ro
+#    #command:
+#      #- '-storage_driver="elasticsearch"'
+#      #- "-alsologtostderr=true"
+#      #- '-storage_driver_es_host="https://elasticsearch:9200"'
+#    expose:
+#      - 8080
