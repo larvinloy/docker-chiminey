@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker exec -ti dockerchiminey_chiminey_1 python chiminey.py initial
