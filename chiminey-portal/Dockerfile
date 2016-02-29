@@ -54,6 +54,7 @@ WORKDIR /opt/chiminey/current
 
 COPY settings.py /opt/chiminey/current/chiminey/settings.py
 
+# https://github.com/vishnubob/wait-for-it
 COPY /waitforit.sh /opt/chiminey/current/waitforit.sh
 RUN chmod u+x /opt/chiminey/current/waitforit.sh
 
@@ -71,8 +72,8 @@ COPY wsgi.py /opt/chiminey/current/wsgi.py
 COPY gunicorn_conf.py /opt/chiminey/current/gunicorn_conf.py
 
 # FIXME: Disable logrotate as may be breaking elasticsearch
-COPY logrotate_chiminey.conf logrotate_celery.conf logrotate_beat.conf /
-RUN chmod 644 /logrotate_chiminey.conf /logrotate_celery.conf /logrotate_beat.conf
+# COPY logrotate_chiminey.conf logrotate_celery.conf logrotate_beat.conf /
+# RUN chmod 644 /logrotate_chiminey.conf /logrotate_celery.conf /logrotate_beat.conf
 
 RUN mkdir -p /var/run/celery
 RUN mkdir -p /var/run/beat
@@ -87,16 +88,11 @@ RUN chown -R chiminey.nginx /opt/chiminey/current /chiminey_settings /var/chimin
 
 EXPOSE 8000
 
-# forward request and error logs to docker log collector
-# https://serverfault.com/questions/599103/make-a-docker-application-write-to-stdout
-# RUN ln -sf /dev/stdout /logs/beat/beat.log
-# RUN ln -sf /dev/stderr /logs/beat/error.log
-
 VOLUME /logs
 VOLUME /var/chiminey/remotesys
 VOLUME /opt/chiminey/current/static
 VOLUME /var/run/celery
-#VOLUME /var/run/beat
+VOLUME /var/run/beat
 
 
 ENV CELERY_SOFT_TIME_LIMIT 155200

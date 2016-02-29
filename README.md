@@ -12,19 +12,20 @@ Usage
  ```
      git clone git@bitbucket.org:fnargle/docker-chiminey.git
  ```
- 
+
 3. Change your working directory
  ```
     cd docker-chiminey
  ```
- 
+
 4. Review the passwords in the enviornment sections in the docker-compose.yml
- 
+
 5. Configure and start the system
 
 ```
-    make
-    docker-compose up -d 
+    docker-compose build
+    docker-compose run --rm makecerts.py
+    docker-compose up -d
 ```
 
 

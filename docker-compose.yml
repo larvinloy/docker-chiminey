@@ -37,7 +37,7 @@ celery:
     - /var/run/chiminey
 #    - /home/docker/src/current:/opt/chiminey/current
   environment:
-    - CELERY_LOG_LEVEL=DEBUG
+    - CELERY_LOG_LEVEL=ERROR
     - CHIMINEY_LOG_FILE=celery/celery.log
     - CELERY_POLL_TIME=10
     - DJANGO_DEBUG=0
@@ -71,7 +71,7 @@ nginx:
    - chiminey
    - logsstore
   volumes:
-    #- ./certs:/opt/certs:ro
+    - ./certs:/opt/certs:ro
     - /etc/localtime:/etc/localtime:ro
   expose:
     - 5601
@@ -159,6 +159,15 @@ logsstore:
   volumes:
     - /logs
   command: "true"
+
+makecerts:
+    build: makecerts
+    volumes:
+        - ./chiminey-nginx/certs:/opt/certs
+    command:
+        "/run.sh"
+
+
 
 # elasticsearch:
 #  restart: on-failure:5

@@ -1,0 +1,6 @@
+makecerts:
+    build: .
+    volumes:
+        - chiminey-nginx/certs:/opt/certs
+    command:
+        "/run.sh"

@@ -28,7 +28,8 @@ trap clean_up SIGTERM
 echo beating...
 # run Celery worker for our project myproject with Celery configuration stored in Celeryconf
 #su -m chiminey -c "python chiminey.py celerybeat --logfile=/logs/beat.log"
-su -m chiminey -c "python chiminey.py celerybeat --logfile=/logs/beat/beat.log --pidfile=/var/run/beat/beat.pid --schedule=/logs/beat/celerybeat-schedule >> /logs/beat/beat.log 2>&1"
+# su -m chiminey -c "python chiminey.py celerybeat --logfile=/logs/beat/beat.log --pidfile=/var/run/beat/beat.pid --schedule=/logs/beat/celerybeat-schedule >> /logs/beat/beat.log 2>&1"
+su -m chiminey -c "python chiminey.py celerybeat --pidfile=/var/run/beat/beat.pid --schedule=/logs/beat/celerybeat-schedule 2>&1"
 
 echo beat is done...
 exit 0

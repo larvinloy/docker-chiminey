@@ -23,6 +23,7 @@ host_name=`hostname`
 function clean_up {
 
     echo cleaning up...
+#    rm -vf /logs/celery/celery.log
     rm -vf /var/run/celery/w1_w1\@$host_name.pid
     rm -vf /var/run/celery/w2_w2\@$host_name.pid
     rm -vf /var/run/celery/w3_w3\@$host_name.pid
@@ -36,10 +37,13 @@ trap clean_up SIGTERM
 echo starting...
 #su -m chiminey -c "python chiminey.py celery worker --logfile=/logs/celery.log --loglevel=DEBUG"
 #su chiminey -c "python chiminey.py celeryd_multin w1 w2 w3 w4 -l $log_level --noft-time-limit=155200 --time-limit=115400 -E -Q:w1 hightasks -Q:w2,w3,w4 default --pidfile=/var/run/celery/%n.pid --logfile=/logs/celery/%n.log  >> /logs/celery/celery.log 2>&1"
-su chiminey -c "python chiminey.py celeryd_multi restart w1 w2 w3 w4 -l $log_level --verbose --soft-time-limit=155200 --time-limit=115400 -E -Q:w1 hightasks -Q:w2,w3,w4 default --pidfile=/var/run/celery/%n_%h.pid --logfile=/logs/celery/%n_%h.log  >> /logs/celery/celery.log 2>&1"
+# su chiminey -c "python chiminey.py celeryd_multi restart w1 w2 w3 w4 -l $log_level --verbose --soft-time-limit=155200 --time-limit=115400 -E -Q:w1 hightasks -Q:w2,w3,w4 default --pidfile=/var/run/celery/%n_%h.pid --logfile=/logs/celery/%n_%h.log  >> /logs/celery/celery.log 2>&1"
+su chiminey -c "python chiminey.py celeryd_multi restart w1 w2 w3 w4 -l $log_level --verbose --soft-time-limit=155200 --time-limit=115400 -E -Q:w1 hightasks -Q:w2,w3,w4 default --pidfile=/var/run/celery/%n_%h.pid --logfile=/logs/celery/celery.log  2>&1"
 
 echo "running..."
+#touch /logs/celery/celery.log
 tail -f /dev/null
+#tail -c +0 -f /logs/celery/celery.log
 
 echo "celery is done..."
 exit 0

@@ -18,8 +18,13 @@ RUN groupadd -r nginx && adduser --home /opt/chiminey --disabled-password --ingr
 
 #EXPOSE 443 80
 
+# forward request and error logs to docker log collector
+# https://serverfault.com/questions/599103/make-a-docker-application-write-to-stdout
+RUN mkdir /logs 
+RUN ln -sf /dev/stdout /logs/nginx_access.log
+RUN ln -sf /dev/stderr /logs/nginx_error.log
+
+
 VOLUME /var/log
 VOLUME /logs
 #VOLUME /opt/certs
-
-

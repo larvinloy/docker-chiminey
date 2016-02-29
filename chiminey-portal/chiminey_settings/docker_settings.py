@@ -89,23 +89,24 @@ LOGGING = {
 
         'default': {
             'class':'logging.StreamHandler',
+            'formatter': 'timestamped'
             },
 
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': os.path.join("/logs", os.environ.get('CHIMINEY_LOG_FILE', 'chiminey.log')),
-            'formatter': 'timestamped',
-            # 'maxBytes': 1024 * 1024 * 100,  # 100 mb
-            # 'backupCount': 4
-            },
-
-        'rotatingfile': {
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join("/logs", os.environ.get('CHIMINEY_LOG_FILE', 'chiminey.log')),
-            'formatter': 'timestamped',
-                         'maxBytes': 1024 * 1024 * 100,  # 100 mb
-                         'backupCount': 4
-            },
+        # 'file': {
+        #     'class': 'logging.FileHandler',
+        #     'filename': os.path.join("/logs", os.environ.get('CHIMINEY_LOG_FILE', 'chiminey.log')),
+        #     'formatter': 'timestamped',
+        #     # 'maxBytes': 1024 * 1024 * 100,  # 100 mb
+        #     # 'backupCount': 4
+        #     },
+        #
+        # 'rotatingfile': {
+        #     'class': 'logging.handlers.RotatingFileHandler',
+        #     'filename': os.path.join("/logs", os.environ.get('CHIMINEY_LOG_FILE', 'chiminey.log')),
+        #     'formatter': 'timestamped',
+        #                  'maxBytes': 1024 * 1024 * 100,  # 100 mb
+        #                  'backupCount': 4
+        #     },
 
 
     },
@@ -114,67 +115,67 @@ LOGGING = {
 
         'chiminey': {
             'level': LOGGER_LEVEL,
-            'handlers': ['default', 'file'],
+            'handlers': ['default'],
         },
         'chiminey.smartconnectorscheduler': {
             'level': LOGGER_LEVEL,
-            'handlers': ['default', 'file'],
+            'handlers': ['default'],
         },
         'chiminey.sshconnection': {
             'level': LOGGER_LEVEL,
-            'handlers': ['default', 'file'],
+            'handlers': ['default'],
             },
         'chiminey.platform': {
             'level': LOGGER_LEVEL,
-            'handlers': ['default', 'file'],
+            'handlers': ['default'],
             },
         'chiminey.cloudconnection': {
             'level': LOGGER_LEVEL,
-            'handlers': ['default', 'file'],
+            'handlers': ['default'],
             },
         'chiminey.reliabilityframework': {
             'level': LOGGER_LEVEL,
-            'handlers': ['default', 'file'],
+            'handlers': ['default'],
             },
         'chiminey.simpleui': {
             'level': LOGGER_LEVEL,
-            'handlers': ['default', 'file'],
+            'handlers': ['default'],
             },
         'chiminey.mytardis': {
             'level': LOGGER_LEVEL,
-            'handlers': ['default', 'file'],
+            'handlers': ['default'],
             },
         'chiminey.simpleui.wizard': {
             'level': LOGGER_LEVEL,
-            'handlers': ['default', 'file'],
+            'handlers': ['default'],
             },
         'chiminey.storage': {
             'level': LOGGER_LEVEL,
-            'handlers': ['default', 'file'],
+            'handlers': ['default'],
             },
         'chiminey.sshconnector': {
             'level': LOGGER_LEVEL,
-            'handlers': ['default', 'file'],
+            'handlers': ['default'],
             },
         'chiminey.core': {
             'level': LOGGER_LEVEL,
-            'handlers': ['default', 'file'],
+            'handlers': ['default'],
             },
         'chiminey.smartconnectorscheduler.tasks': {
             'level': LOGGER_LEVEL,
-            'handlers': ['default', 'file'],
+            'handlers': ['default'],
             },
         'celery.task': {
             'level': 'ERROR',
-            'handlers': ['default', 'file'],
+            'handlers': ['default'],
             },
         'django.db.backends': {
             'level': 'ERROR',
-            'handlers': ['default', 'file'],
+            'handlers': ['default'],
             },
         'south': {
             'level': LOGGER_LEVEL,
-            'handlers': ['default', 'file'],
+            'handlers': ['default'],
             },
     }
 }
