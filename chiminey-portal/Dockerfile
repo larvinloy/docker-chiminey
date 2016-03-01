@@ -83,6 +83,7 @@ EXPOSE 8000
 
 VOLUME /logs
 VOLUME /var/chiminey/remotesys
+VOLUME /opt/chiminey/current
 VOLUME /opt/chiminey/current/static
 VOLUME /var/run/celery
 VOLUME /var/run/beat

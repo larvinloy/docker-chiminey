@@ -1,4 +1,6 @@
 #!/bin/bash
 
-docker exec -it dockerchiminey_chiminey_1 /bin/bash
+chiminey_portal_container=`docker  ps  --filter "name=dockerchiminey_chiminey_1" | tail -n 1 | awk '{print $NF}' `
+
+docker exec -it $chiminey_portal_container /bin/bash
 

@@ -10,9 +10,13 @@ chiminey:
    - logsstore
   command:
    - "gunicorn"
+  ports:
+   - "50000:22"
+  expose:
+   - 22
   volumes:
    - /etc/localtime:/etc/localtime:ro
-#   - /home/docker/src/current:/opt/chiminey/current
+#   - /Users/iman/docker_mnt:/opt/chiminey/current
   environment:
    - APIHOST=http://nginxamb/
    - GUNICORN_LOG_LEVEL=DEBUG
