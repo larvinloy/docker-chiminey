@@ -28,7 +28,10 @@ supervisor \
 gunicorn \
 nginx \
 pwgen \
- 	&& apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && apt-get clean autoclean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN curl -o /usr/local/bin/gosu -SL 'https://github.com/tianon/gosu/releases/download/1.0/gosu' \
+&& chmod +x /usr/local/bin/gosu
 
 RUN echo new cache
 # make chiminey user
@@ -77,7 +80,7 @@ COPY gunicorn_conf.py /opt/chiminey/current/gunicorn_conf.py
 
 RUN mkdir -p /var/run/celery
 RUN mkdir -p /var/run/beat
-RUN mkdir -p /logs  /logs/celery # /logs/beat
+RUN mkdir -p /logs  /logs/celery /logs/beat
 
 # fix all ownership
 RUN chown -R chiminey.nginx /opt/chiminey/current /chiminey_settings /var/chiminey/remotesys /logs /var/run/celery /var/run/beat

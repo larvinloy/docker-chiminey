@@ -24,7 +24,7 @@ Usage
 
 ```
     docker-compose build
-    docker-compose run --rm makecerts.py
+    docker-compose run --rm makecerts
     docker-compose up -d
 ```
 

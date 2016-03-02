@@ -59,6 +59,12 @@ server {
          alias /opt/chiminey/current/static/;
      }
 
+    # error 502 redirect to error502.html
+    error_page 502 @maintenance;
+    location @maintenance {
+        rewrite ^(.*)$ /static/simpleui/error502.html break;
+    }
+
 }
 
 

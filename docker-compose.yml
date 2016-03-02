@@ -15,7 +15,7 @@ chiminey:
 #   - /home/docker/src/current:/opt/chiminey/current
   environment:
    - APIHOST=http://nginxamb/
-   - GUNICORN_LOG_LEVEL=DEBUG
+   - GUNICORN_LOG_LEVEL=ERROR
    - CHIMINEY_LOG_FILE=chiminey.log
    - CELERY_POLL_TIME=10
    - DJANGO_DEBUG=0

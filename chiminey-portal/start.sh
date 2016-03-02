@@ -22,7 +22,7 @@ main() {
 }
 
 run_gunicorn() {
-	cp /logrotate_chiminey.conf /etc/logrotate.d/chiminey
+	#cp /logrotate_chiminey.conf /etc/logrotate.d/chiminey
 	# chmod 644 /etc/logrotate.d/chiminey
 	# mkdir -p /logs
 	# ln -sf /dev/stdout /logs/gunicorn.log
@@ -31,7 +31,7 @@ run_gunicorn() {
 }
 
 run_celery() {
-	cp /logrotate_celery.conf /etc/logrotate.d/celery
+	#cp /logrotate_celery.conf /etc/logrotate.d/celery
 	# chmod 644 /etc/logrotate.d/celery
 	# mkdir -p /logs/celery
 	# ln -sf /dev/stdout /logs/celery/celery.log
@@ -39,7 +39,7 @@ run_celery() {
 }
 
 run_beat() {
-	cp /logrotate_beat.conf /etc/logrotate.d/beat
+	#cp /logrotate_beat.conf /etc/logrotate.d/beat
 	# chmod 644 /etc/logrotate.d/beat
 	# mkdir -p /logs/beat
 	# ln -sf /dev/stdout /logs/beat/beat.log

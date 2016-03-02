@@ -38,7 +38,7 @@ echo starting...
 #su -m chiminey -c "python chiminey.py celery worker --logfile=/logs/celery.log --loglevel=DEBUG"
 #su chiminey -c "python chiminey.py celeryd_multin w1 w2 w3 w4 -l $log_level --noft-time-limit=155200 --time-limit=115400 -E -Q:w1 hightasks -Q:w2,w3,w4 default --pidfile=/var/run/celery/%n.pid --logfile=/logs/celery/%n.log  >> /logs/celery/celery.log 2>&1"
 # su chiminey -c "python chiminey.py celeryd_multi restart w1 w2 w3 w4 -l $log_level --verbose --soft-time-limit=155200 --time-limit=115400 -E -Q:w1 hightasks -Q:w2,w3,w4 default --pidfile=/var/run/celery/%n_%h.pid --logfile=/logs/celery/%n_%h.log  >> /logs/celery/celery.log 2>&1"
-su chiminey -c "python chiminey.py celeryd_multi restart w1 w2 w3 w4 -l $log_level --verbose --soft-time-limit=155200 --time-limit=115400 -E -Q:w1 hightasks -Q:w2,w3,w4 default --pidfile=/var/run/celery/%n_%h.pid --logfile=/logs/celery/celery.log  2>&1"
+gosu chiminey -c "python chiminey.py celeryd_multi restart w1 w2 w3 w4 -l $log_level --verbose --soft-time-limit=155200 --time-limit=115400 -E -Q:w1 hightasks -Q:w2,w3,w4 default --pidfile=/var/run/celery/%n_%h.pid --logfile=/dev/stdout 2>&1"
 
 echo "running..."
 #touch /logs/celery/celery.log

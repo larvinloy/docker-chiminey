@@ -36,4 +36,6 @@ log_level=${GUNICORN_LOG_LEVEL:WARN}
 port=${GUNICORN_PORT:8000}
 
 
-/usr/bin/gunicorn --log-level $log_level --log-file /logs/gunicorn.log -c /opt/chiminey/current/gunicorn_conf.py -u chiminey -g nginx -b :8000 wsgi:application >> /logs/gunicorn.log 2>&1
+#/usr/bin/gunicorn --log-level $log_level --log-file /logs/gunicorn.log -c /opt/chiminey/current/gunicorn_conf.py -u chiminey -g nginx -b :8000 wsgi:application >> /logs/gunicorn.log 2>&1
+#/usr/bin/gunicorn --log-level $log_level --log-file /logs/gunicorn.log -c /opt/chiminey/current/gunicorn_conf.py -u chiminey -g nginx -b :8000 wsgi:application 2>&1
+/usr/bin/gunicorn --log-level $log_level -c /opt/chiminey/current/gunicorn_conf.py -u chiminey -g nginx -b :8000 wsgi:application 2>&1
