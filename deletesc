@@ -1,12 +1,7 @@
 #!/bin/bash
 
-args=""
-if [ $# -gt 0 ] 
-then
-  args=$1
-fi
-
 chiminey_portal_container=`docker  ps  --filter "name=dockerchiminey_chiminey_1" | tail -n 1 | awk '{print $NF}' `
 
-docker exec -ti $chiminey_portal_container python chiminey.py listscs $args
+
+docker exec -ti $chiminey_portal_container  python chiminey.py deletesc $1
  
