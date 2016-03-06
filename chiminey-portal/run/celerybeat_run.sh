@@ -12,11 +12,27 @@ fi
 
 # need to sleep to make sure that db is ready before syndb runs
 # there must be a better way of doing this...
-sleep 30
+echo sleeping...
+sleep 40
 
 
+function clean_up {
+
+    echo cleaning up...
+    rm -vf /var/run/beat/beat.pid
+
+}
+
+clean_up
+
+
+trap clean_up SIGTERM
+
+echo beating...
 # run Celery worker for our project myproject with Celery configuration stored in Celeryconf
 #su -m chiminey -c "python chiminey.py celerybeat --logfile=/logs/beat.log"
 su -m chiminey -c "python chiminey.py celerybeat --logfile=/logs/beat/beat.log --pidfile=/var/run/beat/beat.pid --schedule=/logs/beat/celerybeat-schedule >> /logs/beat/beat.log 2>&1"
 
-echo beat done
+clean_up
+
+echo beat is done...

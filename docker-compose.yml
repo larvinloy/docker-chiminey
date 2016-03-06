@@ -10,8 +10,13 @@ chiminey:
    - logsstore
   command:
    - "gunicorn"
+  ports:
+   - "50000:22"
+  expose:
+   - 22
   volumes:
    - /etc/localtime:/etc/localtime:ro
+#   - /Users/iman/docker_mnt:/opt/chiminey/current
   environment:
    - APIHOST=http://nginxamb/
    - GUNICORN_LOG_LEVEL=DEBUG
@@ -34,6 +39,7 @@ celery:
   volumes:
     - /etc/localtime:/etc/localtime:ro
     - /var/run/chiminey
+#    - /home/docker/src/current:/opt/chiminey/current
   environment:
     - CELERY_LOG_LEVEL=DEBUG
     - CHIMINEY_LOG_FILE=celery/celery.log
@@ -55,6 +61,7 @@ beat:
   volumes:
     - /etc/localtime:/etc/localtime:ro
     - /var/run/beat
+#    - /home/docker/src/current:/opt/chiminey/current
   environment:
    - CHIMINEY_LOG_FILE=beat/beat.log
    - CELERY_POLL_TIME=10
@@ -78,7 +85,7 @@ nginx:
     - 5555
   links:
    - chiminey:chiminey
-   - kibana:kibana
+   #- kibana:kibana
    - cadvisor:cadvisor
    - monitor:monitor
 
@@ -157,36 +164,39 @@ logsstore:
     - /logs
   command: "true"
 
-elasticsearch:
- restart: on-failure:5
- image: denibertovic/elasticsearch
- volumes:
-     - ./logs/elasticsearch:/opt/elasticsearch/logs
-     - ./config-examples/elasticsearch:/opt/elasticsearch/config
-     - ./data/elasticsearch:/opt/elasticsearch/data
-
-logstash:
-  restart: on-failure:5
-  image: denibertovic/logstash
-  links:
-      - elasticsearch
-  volumes:
-      - ./config-examples/logstash:/opt/conf
-      - ./certs:/opt/certs
-      - ./logs/logstash:/opt/logs
-  volumes_from:
-      - logsstore
-
-kibana:
-  restart: on-failure:5
-  image: denibertovic/kibana
-  links:
-      - elasticsearch
-  volumes:
-      - ./logs/kibana:/logs
-      - ./config-examples/kibana:/kibana/config
-  expose:
-      - 5601
+# elasticsearch:
+#  restart: on-failure:5
+#  image: denibertovic/elasticsearch
+#  ports:
+#      - 9200:9200
+#      - 9300:9300
+#  volumes:
+#      - ./logs/elasticsearch:/opt/elasticsearch/logs
+#      - ./config-examples/elasticsearch:/opt/elasticsearch/config
+#      - ./data/elasticsearch:/opt/elasticsearch/data
+#
+# logstash:
+#   restart: on-failure:5
+#   image: denibertovic/logstash
+#   links:
+#       - elasticsearch
+#   volumes:
+#       - ./config-examples/logstash:/opt/conf
+#       - ./certs:/opt/certs
+#       - ./logs/logstash:/opt/logs
+#   volumes_from:
+#       - logsstore
+#
+# kibana:
+#   restart: on-failure:5
+#   image: denibertovic/kibana
+#   links:
+#       - elasticsearch:elasticsearch
+#   volumes:
+#       - ./logs/kibana:/logs
+#       - ./config-examples/kibana:/kibana/config
+#   expose:
+#       - 5601
 
 cadvisor:
    restart: on-failure:5
@@ -199,7 +209,7 @@ cadvisor:
      - /var/lib/docker/:/var/lib/docker:ro
      - /cgroup:/cgroup:ro
    #command:
-     #- '-storage_driver="elasticsearch"' 
+     #- '-storage_driver="elasticsearch"'
      #- "-alsologtostderr=true"
      #- '-storage_driver_es_host="https://elasticsearch:9200"'
    expose:

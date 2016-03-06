@@ -47,6 +47,7 @@ RUN mkdir -p /var/chiminey/remotesys
 # install chiminey
 ENV CHIMINEY_URL https://github.com/chiminey/chiminey.git
 ENV CHIMINEY_BRANCH docker
+
 RUN cd /opt/chiminey &&  git clone -b ${CHIMINEY_BRANCH} ${CHIMINEY_URL} current
 
 WORKDIR /opt/chiminey/current
@@ -65,13 +66,12 @@ RUN chmod u+x /opt/chiminey/current/chiminey.py
 COPY wsgi.py /opt/chiminey/current/wsgi.py
 COPY gunicorn_conf.py /opt/chiminey/current/gunicorn_conf.py
 
-COPY logrotate_chiminey.conf logrotate_celery.conf logrotate_beat.conf /
-RUN chmod 644 /logrotate_chiminey.conf /logrotate_celery.conf /logrotate_beat.conf
+# FIXME: Disabled logrotate as may be breaking elasticsearch
+#COPY logrotate_chiminey.conf logrotate_celery.conf logrotate_beat.conf /
+#RUN chmod 644 /logrotate_chiminey.conf /logrotate_celery.conf /logrotate_beat.conf
 
 RUN mkdir -p /var/run/celery
 RUN mkdir -p /var/run/beat
-
-
 RUN mkdir -p /logs /logs/beat /logs/celery
 
 # fix all ownership
@@ -83,6 +83,7 @@ EXPOSE 8000
 
 VOLUME /logs
 VOLUME /var/chiminey/remotesys
+VOLUME /opt/chiminey/current
 VOLUME /opt/chiminey/current/static
 VOLUME /var/run/celery
 VOLUME /var/run/beat
@@ -109,4 +110,3 @@ RUN chmod u+x /start.sh
 
 ENTRYPOINT ["/start.sh"]
 CMD ["gunicorn"]
-

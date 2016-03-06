@@ -15,8 +15,8 @@ main() {
 
     # need to sleep to make sure that db is ready before celery runs
     # there must be a better way of doing this...
-    echo waiting...
-    sleep 30
+    echo sleeping...
+    sleep 20
 
 
     soft_time_limit=${CELERY_SOFT_TIME_LIMIT:155200}
@@ -24,26 +24,34 @@ main() {
     log_level=${CELERY_LOG_LEVEL:WARN}
     host_name=`hostname`
 
+    function clean_up {
+
+        echo cleaning up...
+        rm -vf /var/run/celery/w1_w1\@$host_name.pid
+        rm -vf /var/run/celery/w2_w2\@$host_name.pid
+        rm -vf /var/run/celery/w3_w3\@$host_name.pid
+        rm -vf /var/run/celery/w4_w4\@$host_name.pid
+
+    }
 
 
-    echo cleaning up pids
-    rm -vf /var/run/celery/w1_w1\@$host_name.pid
-    rm -vf /var/run/celery/w2_w2\@$host_name.pid
-    rm -vf /var/run/celery/w3_w3\@$host_name.pid
-    rm -vf /var/run/celery/w4_w4\@$host_name.pid
+    clean_up
 
-    sleep 10
+    echo starting...
 
-    echo starting celeryd
+
+    trap clean_up SIGTERM
 
     #su -m chiminey -c "python chiminey.py celery worker --logfile=/logs/celery.log --loglevel=DEBUG"
     #su chiminey -c "python chiminey.py celeryd_multin w1 w2 w3 w4 -l $log_level --noft-time-limit=155200 --time-limit=115400 -E -Q:w1 hightasks -Q:w2,w3,w4 default --pidfile=/var/run/celery/%n.pid --logfile=/logs/celery/%n.log  >> /logs/celery/celery.log 2>&1"
     su chiminey -c "python chiminey.py celeryd_multi restart w1 w2 w3 w4 -l $log_level --verbose --soft-time-limit=155200 --time-limit=115400 -E -Q:w1 hightasks -Q:w2,w3,w4 default --pidfile=/var/run/celery/%n_%h.pid --logfile=/logs/celery/%n_%h.log  >> /logs/celery/celery.log 2>&1"
 
-    echo "pause"
+    echo "waiting..."
     tail -f /dev/null
 
-    echo "exited $0"
+    clean_up
+
+    echo "celery is done..."
 }
 
 
