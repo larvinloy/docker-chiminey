@@ -48,7 +48,7 @@ RUN mkdir -p /var/chiminey/remotesys
 ENV CHIMINEY_URL https://github.com/chiminey/chiminey.git
 ENV CHIMINEY_BRANCH docker
 
-RUN cd /opt/chiminey &&  git clone -b ${CHIMINEY_BRANCH} ${CHIMINEY_URL} current
+RUN echo 'Cloning Chiminey' && cd /opt/chiminey &&  git clone -b ${CHIMINEY_BRANCH} ${CHIMINEY_URL} current
 
 WORKDIR /opt/chiminey/current
 

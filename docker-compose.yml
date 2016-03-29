@@ -16,7 +16,7 @@ chiminey:
    - 22
   volumes:
    - /etc/localtime:/etc/localtime:ro
-#   - /Users/iman/docker_mnt:/opt/chiminey/current
+#   - /home/chiminey/src:/opt/chiminey/current
   environment:
    - APIHOST=http://nginxamb/
    - GUNICORN_LOG_LEVEL=DEBUG
@@ -39,7 +39,7 @@ celery:
   volumes:
     - /etc/localtime:/etc/localtime:ro
     - /var/run/chiminey
-#    - /home/docker/src/current:/opt/chiminey/current
+#    - /home/chiminey/src:/opt/chiminey/current
   environment:
     - CELERY_LOG_LEVEL=DEBUG
     - CHIMINEY_LOG_FILE=celery/celery.log
@@ -61,7 +61,7 @@ beat:
   volumes:
     - /etc/localtime:/etc/localtime:ro
     - /var/run/beat
-#    - /home/docker/src/current:/opt/chiminey/current
+ #   - /home/chiminey/src:/opt/chiminey/current
   environment:
    - CHIMINEY_LOG_FILE=beat/beat.log
    - CELERY_POLL_TIME=10
