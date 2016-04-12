@@ -131,11 +131,12 @@ server {
 #     }
 # }
 
-# server {
-#     listen 8080;
+
+#server {
+#    listen 8080;
 #    access_log /logs/nginx_access.log;
 #    error_log /logs/nginx_error.log;
-
+#
 #    # Password protected end points
 #    location / {
 #        proxy_pass http://cadvisor;
@@ -159,10 +160,10 @@ server {
     location / {
         proxy_pass http://monitor;
         proxy_read_timeout 90;
-        limit_except GET {
-          proxy_pass http://monitor;
-          auth_basic "Restricted";
-          auth_basic_user_file /etc/nginx/conf.d/kibana.htpasswd;
-        }
+        #limit_except GET {
+        #  proxy_pass http://monitor;
+        #  auth_basic "Restricted";
+        #  auth_basic_user_file /etc/nginx/conf.d/kibana.htpasswd;
+        #}
     }
 }

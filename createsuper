@@ -1,4 +1,5 @@
 #!/bin/bash
 
+chiminey_portal_container=`docker  ps  --filter "name=dockerchiminey_chiminey_1" | tail -n 1 | awk '{print $NF}' `
 
-docker exec -ti dockerchiminey_chiminey_1 python chiminey.py createsuperuser 
+docker exec -ti $chiminey_portal_container python chiminey.py createsuperuser 

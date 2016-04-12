@@ -49,9 +49,9 @@ RUN mkdir -p /var/chiminey/remotesys
 
 # install chiminey
 ENV CHIMINEY_URL https://github.com/chiminey/chiminey.git
-ENV CHIMINEY_BRANCH docker
+ENV CHIMINEY_BRANCH tutorial
 
-RUN cd /opt/chiminey &&  git clone -b ${CHIMINEY_BRANCH} ${CHIMINEY_URL} current
+RUN echo 'Cloning Chiminey' && cd /opt/chiminey &&  git clone -b ${CHIMINEY_BRANCH} ${CHIMINEY_URL} current
 
 WORKDIR /opt/chiminey/current
 
@@ -93,6 +93,7 @@ EXPOSE 8000
 
 VOLUME /logs
 VOLUME /var/chiminey/remotesys
+VOLUME /opt/chiminey/current
 VOLUME /opt/chiminey/current/static
 VOLUME /var/run/celery
 VOLUME /var/run/beat

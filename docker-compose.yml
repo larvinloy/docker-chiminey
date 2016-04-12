@@ -10,16 +10,21 @@ chiminey:
    - logsstore
   command:
    - "gunicorn"
+  ports:
+   - "50000:22"
+  expose:
+   - 22
   volumes:
    - /etc/localtime:/etc/localtime:ro
-#   - /home/docker/src/current:/opt/chiminey/current
+   # - /home/docker/src/current:/opt/chiminey/current
   environment:
    - APIHOST=http://nginxamb/
    - GUNICORN_LOG_LEVEL=ERROR
    - CHIMINEY_LOG_FILE=chiminey.log
    - CELERY_POLL_TIME=10
-   - DJANGO_DEBUG=0
-   - LOGGER_LEVEL=DEBUG
+   - CELERY_LOG_LEVEL=WARN
+   - DJANGO_DEBUG=1
+   - LOGGER_LEVEL=INFO
 
 celery:
   restart: on-failure:5
@@ -35,13 +40,13 @@ celery:
   volumes:
     - /etc/localtime:/etc/localtime:ro
     - /var/run/chiminey
-#    - /home/docker/src/current:/opt/chiminey/current
+    # - /home/docker/src/current:/opt/chiminey/current
   environment:
-    - CELERY_LOG_LEVEL=ERROR
     - CHIMINEY_LOG_FILE=celery/celery.log
     - CELERY_POLL_TIME=10
-    - DJANGO_DEBUG=0
-    - LOGGER_LEVEL=DEBUG
+    - CELERY_LOG_LEVEL=WARN
+    - DJANGO_DEBUG=1
+    - LOGGER_LEVEL=INFO
 
 beat:
   restart: on-failure:5
@@ -57,12 +62,12 @@ beat:
   volumes:
     - /etc/localtime:/etc/localtime:ro
     - /var/run/beat
-#    - /home/docker/src/current:/opt/chiminey/current
+    # - /home/docker/src/current:/opt/chiminey/current
   environment:
    - CHIMINEY_LOG_FILE=beat/beat.log
    - CELERY_POLL_TIME=10
-   - DJANGO_DEBUG=0
-   - LOGGER_LEVEL=DEBUG
+   - DJANGO_DEBUG=1
+   - LOGGER_LEVEL=INFO
 
 nginx:
   restart: on-failure:5
