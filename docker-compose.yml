@@ -1,6 +1,6 @@
 chiminey:
   restart: on-failure:5
-  image: chiminey/chiminey-portal:1.0.0
+  image: chiminey/chiminey-portal:1.1.0
   links:
    - db:db
    - redis:redis
@@ -28,7 +28,7 @@ chiminey:
 
 celery:
   restart: on-failure:5
-  image: chiminey/chiminey-portal:1.0.0
+  image: chiminey/chiminey-portal:1.1.0
   links:
    - db:db
    - redis:redis
@@ -50,7 +50,7 @@ celery:
 
 beat:
   restart: on-failure:5
-  image: chiminey/chiminey-portal:1.0.0
+  image: chiminey/chiminey-portal:1.1.0
   links:
    - db:db
    - redis:redis
@@ -71,7 +71,7 @@ beat:
 
 nginx:
   restart: on-failure:5
-  image: chiminey/chiminey-nginx:1.0.0
+  image: chiminey/chiminey-nginx:1.1.0
   volumes_from:
    - chiminey
    - logsstore
@@ -123,7 +123,7 @@ redis:
 
 monitor:
   restart: on-failure:5
-  image: chiminey/chiminey-monitor:1.0.0
+  image: chiminey/chiminey-monitor:1.1.0
   expose:
     - 5555
   links:
@@ -139,7 +139,7 @@ monitor:
 #    - "--persistent=True"
 
 chimineystore:
-  image: chiminey/chiminey-portal:1.0.0
+  image: chiminey/chiminey-portal:1.1.0
   volumes:
    - /var/chiminey/remotesys
   command:
@@ -160,7 +160,7 @@ redisstore:
     - "true"
 
 logsstore:
-  image: chiminey/chiminey-portal:1.0.0
+  image: chiminey/chiminey-portal:1.1.0
   volumes:
     - /logs
   command: "true"
