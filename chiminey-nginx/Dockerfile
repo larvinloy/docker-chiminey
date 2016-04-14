@@ -11,8 +11,6 @@ COPY logrotate.conf /etc/logrotate.d/chiminey
 RUN chmod 644 /etc/logrotate.d/chiminey
 
 RUN mkdir /opt/certs && chmod 744 /opt/certs
-COPY certs/chiminey.key certs/chiminey.crt /opt/certs/
-RUN chmod 700 /opt/certs/chiminey.key /opt/certs/chiminey.crt
 
 RUN groupadd -r nginx && adduser --home /opt/chiminey --disabled-password --ingroup nginx --gecos '' chiminey
 
@@ -27,4 +25,4 @@ RUN ln -sf /dev/stderr /logs/nginx_error.log
 
 VOLUME /var/log
 VOLUME /logs
-#VOLUME /opt/certs
+VOLUME /opt/certs

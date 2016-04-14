@@ -1,6 +1,6 @@
 chiminey:
   restart: on-failure:5
-  build: chiminey-portal
+  image: chiminey/chiminey-portal:1.1.0
   links:
    - db:db
    - redis:redis
@@ -14,8 +14,8 @@ chiminey:
    - "50000:22"
   expose:
    - 22
-  volumes:
-   - /etc/localtime:/etc/localtime:ro
+  #volumes:
+  # - /etc/localtime:/etc/localtime:ro
    # - /home/docker/src/current:/opt/chiminey/current
   environment:
    - APIHOST=http://nginxamb/
@@ -28,7 +28,7 @@ chiminey:
 
 celery:
   restart: on-failure:5
-  build: chiminey-portal
+  image: chiminey/chiminey-portal:1.1.0
   links:
    - db:db
    - redis:redis
@@ -38,7 +38,7 @@ celery:
   command:
     - "celery"
   volumes:
-    - /etc/localtime:/etc/localtime:ro
+    #- /etc/localtime:/etc/localtime:ro
     - /var/run/chiminey
     # - /home/docker/src/current:/opt/chiminey/current
   environment:
@@ -50,7 +50,7 @@ celery:
 
 beat:
   restart: on-failure:5
-  build: chiminey-portal
+  image: chiminey/chiminey-portal:1.1.0
   links:
    - db:db
    - redis:redis
@@ -60,7 +60,7 @@ beat:
   command:
     - "beat"
   volumes:
-    - /etc/localtime:/etc/localtime:ro
+    #- /etc/localtime:/etc/localtime:ro
     - /var/run/beat
     # - /home/docker/src/current:/opt/chiminey/current
   environment:
@@ -71,13 +71,14 @@ beat:
 
 nginx:
   restart: on-failure:5
-  build: chiminey-nginx
+  image: chiminey/chiminey-nginx:1.1.0
+  #build: chiminey-nginx
   volumes_from:
    - chiminey
    - logsstore
   volumes:
     - ./chiminey-nginx/certs:/opt/certs:ro
-    - /etc/localtime:/etc/localtime:ro
+    #- /etc/localtime:/etc/localtime:ro
   expose:
     - 5601
 #    - 8080
@@ -123,13 +124,13 @@ redis:
 
 monitor:
   restart: on-failure:5
-  build: chiminey-monitor
+  image: chiminey/chiminey-monitor:1.1.0
   expose:
     - 5555
   links:
     - redis:redis
-  volumes:
-    - /etc/localtime:/etc/localtime:ro
+  #volumes:
+    #- /etc/localtime:/etc/localtime:ro
   environment:
     - CELERY_BROKER_URL=redis://redis:6379//
   command:
@@ -139,9 +140,9 @@ monitor:
 #    - "--persistent=True"
 
 chimineystore:
-  build: chiminey-portal
-  volumes:
-   - /var/chiminey/remotesys
+  image: chiminey/chiminey-portal:1.1.0
+  #volumes:
+  # - /var/chiminey/remotesys
   command:
     - "store"
 
@@ -160,7 +161,7 @@ redisstore:
     - "true"
 
 logsstore:
-  build: chiminey-portal
+  image: chiminey/chiminey-portal:1.1.0
   volumes:
     - /logs
   command: "true"
