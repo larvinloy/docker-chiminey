@@ -1,0 +1,5 @@
+#!/bin/sh
+
+docker-compose restart chiminey celery beat ; docker-compose restart nginx
+
+
