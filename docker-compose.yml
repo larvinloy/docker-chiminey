@@ -23,7 +23,7 @@ chiminey:
    - CHIMINEY_LOG_FILE=chiminey.log
    - CELERY_POLL_TIME=10
    - CELERY_LOG_LEVEL=WARN
-   - DJANGO_DEBUG=1
+   - DJANGO_DEBUG=0
    - LOGGER_LEVEL=INFO
 
 celery:
@@ -45,7 +45,7 @@ celery:
     - CHIMINEY_LOG_FILE=celery/celery.log
     - CELERY_POLL_TIME=10
     - CELERY_LOG_LEVEL=WARN
-    - DJANGO_DEBUG=1
+    - DJANGO_DEBUG=0
     - LOGGER_LEVEL=INFO
 
 beat:
@@ -66,7 +66,7 @@ beat:
   environment:
    - CHIMINEY_LOG_FILE=beat/beat.log
    - CELERY_POLL_TIME=10
-   - DJANGO_DEBUG=1
+   - DJANGO_DEBUG=0
    - LOGGER_LEVEL=INFO
 
 nginx:
