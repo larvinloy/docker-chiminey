@@ -85,6 +85,8 @@ RUN mkdir -p /logs  /logs/celery /logs/beat
 # fix all ownership
 RUN chown -R chiminey.nginx /opt/chiminey/current /chiminey_settings /var/chiminey/remotesys /logs /var/run/celery /var/run/beat
 
+RUN touch /logs/chiminey.log && chown chiminey.nginx /logs/chiminey.log
+
 #RUN mkdir -p /var/run/gunicorn/chiminey && chown chiminey.nginx /var/run/gunicorn/chiminey
 
 #COPY gherkin-languages.json /usr/local/lib/python2.7/site-packages/gherkin3/gherkin-languages.json
