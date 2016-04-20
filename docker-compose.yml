@@ -166,12 +166,12 @@ logsstore:
     - /logs
   command: "true"
 
-makecerts:
-    build: makecerts
-    volumes:
-        - ./chiminey-nginx/certs:/opt/certs
-    command:
-        "/run.sh"
+#makecerts:
+#    build: makecerts
+#    volumes:
+#        - ./chiminey-nginx/certs:/opt/certs
+#    command:
+#        "/run.sh"
 
 
 
