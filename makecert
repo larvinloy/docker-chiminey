@@ -1,3 +1,9 @@
-#!/bin/bash
+#!/bin/sh
 
-docker-compose run   --rm makecerts
+CERT_DIR="chiminey-nginx/certs"
+if [ -f $CERT_DIR/chiminey.crt  ]; then \
+    echo this script will not overwrite existing certificates.  Remove the existing certs from \'$CERT_DIR\'  by hand and rerun this command.
+    exit 0
+fi
+mkdir -p  $CERT_DIR
+cd $CERT_DIR && openssl req -x509 -nodes -newkey rsa:2048 -keyout chiminey.key -out chiminey.crt
