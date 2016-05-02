@@ -8,6 +8,7 @@ chiminey:
   volumes_from:
    - chimineystore
    - logsstore
+   - srcstore
   command:
    - "gunicorn"
   ports:
@@ -34,7 +35,9 @@ celery:
    - redis:redis
   volumes_from:
    - chimineystore
-   - logsstore
+   -  logsstore
+   - srcstore
+
   command:
     - "celery"
   volumes:
@@ -57,6 +60,8 @@ beat:
   volumes_from:
    - chimineystore
    - logsstore
+   - srcstore
+
   command:
     - "beat"
   volumes:
@@ -75,6 +80,7 @@ nginx:
   volumes_from:
    - chiminey
    - logsstore
+   - srcstore
   volumes:
     - ./chiminey-nginx/certs:/opt/certs:ro
     #- /etc/localtime:/etc/localtime:ro
@@ -145,6 +151,7 @@ chimineystore:
   command:
     - "store"
 
+
 dbstore:
   image: postgres:9.4.5
   volumes:
@@ -172,7 +179,23 @@ makecerts:
     command:
         "/run.sh"
 
+# Use only for development. For production, source code should be part of the image and not mounted as volume, as source code is not DATA.
+srcstore:
+    build: chiminey-portal
+    volumes:
+      - /opt/chiminey/current
+    command: "true"
 
+# Use only for development.  Allows developer to remote ssh into volume with source code to allow src code updates.  FOr production, source code should be part of the image and not mounted as volume, as source code is not DATA.
+ssh:
+    image: million12/ssh
+    ports:
+        - "60000:22"
+    environment:
+        - ROOT_PASS=my_pass
+    volumes_from:
+     - chimineystore
+     - srcstore
 
 # elasticsearch:
 #  restart: on-failure:5
