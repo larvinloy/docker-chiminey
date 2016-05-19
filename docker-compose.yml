@@ -16,14 +16,15 @@ chiminey:
    - 22
   volumes:
    - /etc/localtime:/etc/localtime:ro
+   - /home/docker/src/current/static:/opt/chiminey/current/static
    #- /home/docker/src/current:/opt/chiminey/current
   environment:
    - APIHOST=http://nginxamb/
-   - GUNICORN_LOG_LEVEL=ERROR
+   - GUNICORN_LOG_LEVEL=DEBUG
    - CHIMINEY_LOG_FILE=chiminey.log
    - CELERY_POLL_TIME=10
    - CELERY_LOG_LEVEL=WARN
-   - DJANGO_DEBUG=0
+   - DJANGO_DEBUG=1
    - LOGGER_LEVEL=INFO
 
 celery:
