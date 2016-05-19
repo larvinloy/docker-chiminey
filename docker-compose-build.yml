@@ -15,9 +15,9 @@ chiminey:
    - "50000:22"
   expose:
    - 22
-  #volumes:
+  volumes:
   # - /etc/localtime:/etc/localtime:ro
-   # - /home/docker/src/current:/opt/chiminey/current
+    - /home/docker/src/current/static:/opt/chiminey/current/static
   environment:
    - APIHOST=http://nginxamb/
    - GUNICORN_LOG_LEVEL=ERROR

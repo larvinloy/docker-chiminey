@@ -55,7 +55,7 @@ RUN echo 'Cloning Chiminey' && cd /opt/chiminey &&  git clone -b ${CHIMINEY_BRAN
 
 WORKDIR /opt/chiminey/current
 
-COPY settings.py /opt/chiminey/current/chiminey/settings.py
+#COPY settings.py /opt/chiminey/current/chiminey/settings.py
 
 # https://github.com/vishnubob/wait-for-it
 COPY /waitforit.sh /opt/chiminey/current/waitforit.sh
@@ -63,8 +63,8 @@ RUN chmod u+x /opt/chiminey/current/waitforit.sh
 
 RUN mkdir -p /opt/chiminey/current/static
 RUN mkdir -p /opt/chiminey/current/chiminey/smartconnectorscheduler/fixtures
-RUN mkdir -p /chiminey_settings
-COPY chiminey_settings/ /chiminey_settings
+COPY chiminey_settings/settings.py /opt/chiminey/current/chiminey/settings.py
+RUN chmod u+x /opt/chiminey/current/chiminey/settings.py
 COPY chiminey.py /opt/chiminey/current/chiminey.py
 RUN chmod u+x /opt/chiminey/current/chiminey.py
 
@@ -83,7 +83,12 @@ RUN mkdir -p /var/run/beat
 RUN mkdir -p /logs  /logs/celery /logs/beat
 
 # fix all ownership
-RUN chown -R chiminey.nginx /opt/chiminey/current /chiminey_settings /var/chiminey/remotesys /logs /var/run/celery /var/run/beat
+RUN chown -R chiminey.nginx \
+             /opt/chiminey/current \
+             /var/chiminey/remotesys \
+             /logs \
+             /var/run/celery \
+             /var/run/beat
 
 RUN touch /logs/chiminey.log && chown chiminey.nginx /logs/chiminey.log
 

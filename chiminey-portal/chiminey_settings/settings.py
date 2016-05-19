@@ -1,3 +1,6 @@
+from chiminey.settings_changeme import *
+
+
 import djcelery
 from datetime import timedelta
 import os
@@ -184,7 +187,7 @@ ALLOWED_HOSTS = ['*']
 
 
 
-       
+
 
 
 
