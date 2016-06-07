@@ -42,6 +42,7 @@ services:
         command:
             - "celery"
         volumes:
+            - chimineystore:/var/chiminey/remotesys
             - varstore:/var/run/chiminey
             - logstore:/logs
             - srcstore:/opt/chiminey/current
