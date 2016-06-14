@@ -16,7 +16,6 @@ chiminey:
    - 22
   volumes:
    - /etc/localtime:/etc/localtime:ro
-   - /home/docker/src/current/static:/opt/chiminey/current/static
    #- /home/docker/src/current:/opt/chiminey/current
   environment:
    - APIHOST=http://nginxamb/
