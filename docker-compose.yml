@@ -34,8 +34,13 @@ services:
         env_file: .env
         networks:
             - chiminey
+        logging:
+            driver: gelf
+            options:
+                gelf-address: udp://localhost:12201
+                #tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
 
-    celery:
+    celerydefault:
         restart: on-failure:5
         build: chiminey-portal
         image: chiminey
@@ -50,6 +55,7 @@ services:
             - db
             - redis
         environment:
+            - CELERY_QUEUE=default
             - DJANGO_DEBUG=$DJANGO_DEBUG
             - CHIMINEY_LOG_FILE=$CELERY_LOG_FILE
             - LOGGER_LEVEL=$CELERY_LOGGER_LEVEL
@@ -58,6 +64,42 @@ services:
         env_file: .env
         networks:
             - chiminey
+        logging:
+            driver: gelf
+            options:
+                gelf-address: udp://localhost:12201
+                #tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+
+    celeryhightasks:
+        restart: on-failure:5
+        build: chiminey-portal
+        image: chiminey
+        command:
+            - "celery"
+        volumes:
+            - chimineystore:/var/chiminey/remotesys
+            - varstore:/var/run/chiminey
+            - logstore:/logs
+            - srcstore:/opt/chiminey/current
+        depends_on:
+            - db
+            - redis
+        environment:
+            - CELERY_QUEUE=hightasks
+            - DJANGO_DEBUG=$DJANGO_DEBUG
+            - CHIMINEY_LOG_FILE=$CELERY_LOG_FILE
+            - LOGGER_LEVEL=$CELERY_LOGGER_LEVEL
+            - CELERY_POLL_TIME=$CELERY_POLL_TIME
+            - DB_ENV_POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+        env_file: .env
+        networks:
+            - chiminey
+        logging:
+            driver: gelf
+            options:
+                gelf-address: udp://localhost:12201
+                #tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+
 
     beat:
         restart: on-failure:5
@@ -68,7 +110,8 @@ services:
         depends_on:
             - db
             - redis
-            - celery
+            - celerydefault
+            - celeryhightasks
         volumes:
             - varstore:/var/run/beat
             - chimineystore:/var/chiminey/remotesys
@@ -83,6 +126,11 @@ services:
         env_file: .env
         networks:
             - chiminey
+        logging:
+            driver: gelf
+            options:
+                gelf-address: udp://localhost:12201
+                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
 
     nginx:
         restart: on-failure:5
@@ -112,7 +160,11 @@ services:
             - "6666:5555"
         networks:
             - chiminey
-
+        # logging:
+        #     driver: gelf
+        #     options:
+        #         gelf-address: udp://localhost:12201
+        #         #tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
         env_file: .env
 
     # nginxamb:
@@ -145,6 +197,11 @@ services:
         networks:
             - chiminey
         env_file: .env
+        logging:
+            driver: gelf
+            options:
+                gelf-address: udp://localhost:12201
+                #tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
 
     redis:
         restart: on-failure:5
@@ -156,6 +213,11 @@ services:
         networks:
             - chiminey
         env_file: .env
+        logging:
+            driver: gelf
+            options:
+                gelf-address: udp://localhost:12201
+                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
 
 
     monitor:
@@ -163,7 +225,8 @@ services:
         build: chiminey-monitor
         depends_on:
             - redis
-            - celery
+            - celerydefault
+            - celeryhightasks
         expose:
             - "5555"
         environment:
@@ -176,6 +239,11 @@ services:
         networks:
             - chiminey
         env_file: .env
+        logging:
+            driver: gelf
+            options:
+                gelf-address: udp://localhost:12201
+                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
 
     makecerts:
         restart: never
@@ -187,6 +255,11 @@ services:
         networks:
             - chiminey
         env_file: .env
+        logging:
+            driver: gelf
+            options:
+                gelf-address: udp://localhost:12201
+                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
 
 
     ssh:
@@ -203,6 +276,78 @@ services:
         networks:
             - chiminey
         env_file: .env
+        logging:
+            driver: gelf
+            options:
+                gelf-address: udp://localhost:12201
+                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+
+
+    elasticsearch:
+        restart: always
+        image: elasticsearch:2.3.1
+        networks:
+            - chiminey
+        volumes:
+            - elasticstore:/opt/elasticsearch/data
+
+    logstash:
+        restart: always
+        image: logstash
+        command: |
+          -e '
+          input {
+            # Default port is 12201/udp
+            gelf { }
+            # This generates one test event per minute.
+            # It is great for debugging, but you might
+            # want to remove it in production.
+            heartbeat { }
+          }
+          # The following filter is a hack!
+          # The "de_dot" filter would be better, but it
+          # is not pre-installed with logstash by default.
+          filter {
+            ruby {
+              code => "
+                event.to_hash.keys.each { |k| event[ k.gsub('"'.'"','"'_'"') ] = event.remove(k) if k.include?'"'.'"' }
+              "
+            }
+          }
+          output {
+            elasticsearch {
+              hosts => ["elasticsearch:9200"]
+            }
+            # This will output every message on stdout.
+            # It is great when testing your setup, but in
+            # production, it will probably cause problems;
+            # either by filling up your disks, or worse,
+            # by creating logging loops! BEWARE!
+            #stdout {
+            #  codec => rubydebug
+            #}
+          }'
+        ports:
+            - "12201:12201/udp"
+        networks:
+            - chiminey
+
+    kibana:
+        restart: always
+        image: kibana
+        env_file: .env
+        depends_on:
+            - elasticsearch
+        expose:
+            - 5601
+        #ports:
+        #    - "$KIBANA_PORT:5601"
+        environment:
+            ELASTICSEARCH_URL: http://elasticsearch:9200
+            NODE_OPTIONS:"--max-old-space-size=300"
+        networks:
+            - chiminey
+
 
     # elasticsearch:
     #  restart: on-failure:5
@@ -263,6 +408,7 @@ volumes:
     dbstore:
     chimineystore:
     redisstore:
+    elasticstore:
 
 networks:
     chiminey:
