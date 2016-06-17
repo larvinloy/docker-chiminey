@@ -5,7 +5,8 @@ services:
     chiminey:
         restart: on-failure:5
         build: chiminey-portal
-        image: chiminey
+        image: chiminey/chiminey-portal:latest
+        #image: chiminey
         # links:
         #     #- db:db
         #     #- redis:redis
@@ -43,7 +44,7 @@ services:
     celerydefault:
         restart: on-failure:5
         build: chiminey-portal
-        image: chiminey
+        image: chiminey/chiminey-portal:latest
         command:
             - "celery"
         volumes:
@@ -61,6 +62,8 @@ services:
             - LOGGER_LEVEL=$CELERY_LOGGER_LEVEL
             - CELERY_POLL_TIME=$CELERY_POLL_TIME
             - DB_ENV_POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+            # - CELERY_SOFT_TIME_LIMIT=$CELERY_SOFT_TIME_LIMIT
+            # - CELERY_TIME_LIMIT=$CELERY_TIME_LIMIT
         env_file: .env
         networks:
             - chiminey
@@ -73,7 +76,7 @@ services:
     celeryhightasks:
         restart: on-failure:5
         build: chiminey-portal
-        image: chiminey
+        image: chiminey/chiminey-portal:latest
         command:
             - "celery"
         volumes:
@@ -104,7 +107,7 @@ services:
     beat:
         restart: on-failure:5
         build: chiminey-portal
-        image: chiminey
+        image: chiminey/chiminey-portal:latest
         command:
             - "beat"
         depends_on:
@@ -135,7 +138,7 @@ services:
     nginx:
         restart: on-failure:5
         build: chiminey-nginx
-        image: chiminey-nginx
+        image: chiminey/chiminey-nginx:latest
         depends_on:
             - db
             - redis
@@ -157,7 +160,7 @@ services:
             - "80:80"
             - "443:443"
             - "5601:5601"
-            - "6666:5555"
+            - "5555:5555"
         networks:
             - chiminey
         # logging:
@@ -191,9 +194,10 @@ services:
         restart: on-failure:5
         image: postgres:9.4.5
         volumes:
-            - dbstore:/var/lib/postgresql
+            - dbstore:/var/lib/postgresql/data
         environment:
             - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+            #- PGDATA=/var/lib/postgresql/data
         networks:
             - chiminey
         env_file: .env
@@ -222,6 +226,7 @@ services:
 
     monitor:
         restart: on-failure:5
+        image: chiminey/chiminey-monitor:latest
         build: chiminey-monitor
         depends_on:
             - redis
@@ -343,8 +348,8 @@ services:
         #ports:
         #    - "$KIBANA_PORT:5601"
         environment:
-            ELASTICSEARCH_URL: http://elasticsearch:9200
-            NODE_OPTIONS:"--max-old-space-size=300"
+            - ELASTICSEARCH_URL=http://elasticsearch:9200
+            - NODE_OPTIONS=--max-old-space-size=300
         networks:
             - chiminey
 
@@ -401,14 +406,26 @@ services:
     #      - 8080
 
 volumes:
-
     srcstore:
+        driver: local
+
     logstore:
+        driver: local
+
     varstore:
+        driver: local
+
     dbstore:
+        driver: local
+
     chimineystore:
+        driver: local
+
     redisstore:
+        driver: local
+
     elasticstore:
+        driver: local
 
 networks:
     chiminey:
