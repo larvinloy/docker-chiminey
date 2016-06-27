@@ -6,7 +6,9 @@ This is a dockerized build of the docker branch of the Chiminey system: http://c
 Usage
 -----
 
-1. Install docker and docker-compose (http://docs.docker.com/compose)
+1. Install docker (>= 1.10.0) and docker-compose (>=1.7.0)
+
+http://docs.docker.com/compose)
 
 2. Clone the dockerized chiminey repository
  ```
