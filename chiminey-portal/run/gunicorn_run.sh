@@ -10,7 +10,7 @@ else
 fi
 
 
-/opt/chiminey/current/waitforit.sh db:5432 -- echo "db is up"
+/opt/chiminey/current/waitforit.sh -t 240 db:5432 -- echo "db is up"
 
 # need to sleep to make sure that db is ready before syndb runs
 # there must be a better way of doing this...

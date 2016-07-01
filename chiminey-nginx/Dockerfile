@@ -24,5 +24,5 @@ RUN ln -sf /dev/stderr /logs/nginx_error.log
 
 
 VOLUME /var/log
-VOLUME /logs
+#VOLUME /logs
 VOLUME /opt/certs

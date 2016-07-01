@@ -39,7 +39,7 @@ RUN groupadd -r nginx && adduser --home /opt/chiminey --disabled-password --ingr
 
 # install python prereqs
 COPY requirements.txt /opt/chiminey/requirements.txt
-RUN /usr/bin/pip install -U pip && pip install -r /opt/chiminey/requirements.txt
+RUN /usr/bin/pip install -U pip && pip install -r /opt/chiminey/requirements.txt && pip freeze > /opt/chiminey/installed.packagelist
 
 # setup blank known_hosts for ssh connectors
 RUN mkdir /opt/chiminey/.ssh
@@ -98,7 +98,7 @@ RUN touch /logs/chiminey.log && chown chiminey.nginx /logs/chiminey.log
 
 EXPOSE 8000
 
-VOLUME /logs
+#VOLUME /logs
 VOLUME /var/chiminey/remotesys
 VOLUME /opt/chiminey/current
 VOLUME /opt/chiminey/current/static

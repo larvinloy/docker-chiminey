@@ -36,7 +36,7 @@ http://docs.docker.com/compose)
     $ docker-compose up -d
 ```
 
-   After a while, the location http://127.0.0.1 will point at the Chiminey portal.
+   After about a minute, the location http://127.0.0.1 will point at the Chiminey portal.
    To watch the celery workers go to: http://127.0.0.1:8080
 
 7. Configure the Chiminey deployment by creating the superuser, initialising the database, and signing up regular users.

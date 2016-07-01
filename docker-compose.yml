@@ -18,12 +18,14 @@ services:
         expose:
             - "22"
         volumes:
-            - srcstore:/opt/chiminey/current
+            #- srcstore:/opt/chiminey/current
             - chimineystore:/var/chiminey/remotesys
-            - logstore:/logs
+            #- logstore:/logs
+            - /etc/localtime:/etc/localtime:ro
         depends_on:
             - db
             - redis
+            - logstash
         environment:
             - DJANGO_DEBUG=$DJANGO_DEBUG
             - APIHOST=http://nginx/
@@ -50,11 +52,13 @@ services:
         volumes:
             - chimineystore:/var/chiminey/remotesys
             - varstore:/var/run/chiminey
-            - logstore:/logs
-            - srcstore:/opt/chiminey/current
+            #- logstore:/logs
+            - /etc/localtime:/etc/localtime:ro
+            #- srcstore:/opt/chiminey/current
         depends_on:
             - db
             - redis
+            - logstash
         environment:
             - CELERY_QUEUE=default
             - DJANGO_DEBUG=$DJANGO_DEBUG
@@ -82,11 +86,13 @@ services:
         volumes:
             - chimineystore:/var/chiminey/remotesys
             - varstore:/var/run/chiminey
-            - logstore:/logs
-            - srcstore:/opt/chiminey/current
+            #- logstore:/logs
+            - /etc/localtime:/etc/localtime:ro
+            #- srcstore:/opt/chiminey/current
         depends_on:
             - db
             - redis
+            - logstash
         environment:
             - CELERY_QUEUE=hightasks
             - DJANGO_DEBUG=$DJANGO_DEBUG
@@ -118,8 +124,9 @@ services:
         volumes:
             - varstore:/var/run/beat
             - chimineystore:/var/chiminey/remotesys
-            - logstore:/logs
-            - srcstore:/opt/chiminey/current
+            #- logstore:/logs
+            - /etc/localtime:/etc/localtime:ro
+            #- srcstore:/opt/chiminey/current
         environment:
             - DJANGO_DEBUG=$DJANGO_DEBUG
             - CHIMINEY_LOG_FILE=$BEAT_LOG_FILE
@@ -148,7 +155,7 @@ services:
         volumes:
             - varstore:/var/run/beat
             - chimineystore:/var/chiminey/remotesys
-            - logstore:/logs
+            #- logstore:/logs
             #- srcstore:/opt/chiminey/current
             - ./chiminey-nginx/certs:/opt/certs:ro
         # expose:
@@ -163,32 +170,7 @@ services:
             - "5555:5555"
         networks:
             - chiminey
-        # logging:
-        #     driver: gelf
-        #     options:
-        #         gelf-address: udp://localhost:12201
-        #         #tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
         env_file: .env
-
-    # nginxamb:
-    #     restart: on-failure:5
-    #     image: cpuguy83/docker-grand-ambassador
-    #     depends_on:
-    #         - nginx
-    #     ports:
-    #         - "80:80"
-    #         - "443:443"
-    #         - "5601:5601"
-    #         - "6666:5555"
-    #     volumes:
-    #         - /var/run/docker.sock:/var/run/docker.sock
-    #     environment:
-    #         - RABBITMQ_PASS=$RABBITMQ_PASS
-    #     command:
-    #         - "-name=dockerchiminey_nginx_1"
-    #     networks:
-    #         - chiminey
-    #     env_file: .env
 
     db:
         restart: on-failure:5
@@ -201,11 +183,11 @@ services:
         networks:
             - chiminey
         env_file: .env
-        logging:
-            driver: gelf
-            options:
-                gelf-address: udp://localhost:12201
-                #tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+        #logging:
+        #    driver: gelf
+        #    options:
+        #        gelf-address: udp://localhost:12201
+        #        #tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
 
     redis:
         restart: on-failure:5
@@ -217,11 +199,11 @@ services:
         networks:
             - chiminey
         env_file: .env
-        logging:
-            driver: gelf
-            options:
-                gelf-address: udp://localhost:12201
-                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+        #logging:
+        #    driver: gelf
+        #    options:
+        #        gelf-address: udp://localhost:12201
+        #        tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
 
 
     monitor:
@@ -244,11 +226,11 @@ services:
         networks:
             - chiminey
         env_file: .env
-        logging:
-            driver: gelf
-            options:
-                gelf-address: udp://localhost:12201
-                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+        #logging:
+        #    driver: gelf
+        #    options:
+        #        gelf-address: udp://localhost:12201
+        #        tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
 
     makecerts:
         restart: never
@@ -260,11 +242,11 @@ services:
         networks:
             - chiminey
         env_file: .env
-        logging:
-            driver: gelf
-            options:
-                gelf-address: udp://localhost:12201
-                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+        #logging:
+        #    driver: gelf
+        #    options:
+        #        gelf-address: udp://localhost:12201
+        #        tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
 
 
     ssh:
@@ -277,15 +259,15 @@ services:
             - chiminey
         volumes:
             - chimineystore:/var/chiminey/remotesys
-            - srcstore:/opt/chiminey/current
+            #- srcstore:/opt/chiminey/current
         networks:
             - chiminey
         env_file: .env
-        logging:
-            driver: gelf
-            options:
-                gelf-address: udp://localhost:12201
-                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+        #logging:
+        #    driver: gelf
+        #    options:
+        #        gelf-address: udp://localhost:12201
+        #        tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
 
 
     elasticsearch:
@@ -299,6 +281,8 @@ services:
     logstash:
         restart: always
         image: logstash
+        depends_on:
+          - elasticsearch
         command: |
           -e '
           input {
@@ -323,19 +307,20 @@ services:
             elasticsearch {
               hosts => ["elasticsearch:9200"]
             }
-            # This will output every message on stdout.
-            # It is great when testing your setup, but in
-            # production, it will probably cause problems;
-            # either by filling up your disks, or worse,
-            # by creating logging loops! BEWARE!
-            #stdout {
-            #  codec => rubydebug
-            #}
+
+            stdout {
+              codec => line
+            }
+            
           }'
         ports:
             - "12201:12201/udp"
         networks:
             - chiminey
+        logging:
+            driver: json-file
+            options:
+               max-size: 50m
 
     kibana:
         restart: always
@@ -343,6 +328,7 @@ services:
         env_file: .env
         depends_on:
             - elasticsearch
+            - logstash
         expose:
             - 5601
         #ports:
