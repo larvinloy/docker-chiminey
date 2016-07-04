@@ -38,10 +38,10 @@ services:
         networks:
             - chiminey
         logging:
-            driver: gelf
+            driver: json-file 
             options:
-                gelf-address: udp://localhost:12201
-                #tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+               max-size: 50m
+               #tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
 
     celerydefault:
         restart: on-failure:5
@@ -63,7 +63,8 @@ services:
             - CELERY_QUEUE=default
             - DJANGO_DEBUG=$DJANGO_DEBUG
             - CHIMINEY_LOG_FILE=$CELERY_LOG_FILE
-            - LOGGER_LEVEL=$CELERY_LOGGER_LEVEL
+            - LOGGER_LEVEL=$CHIMINEY_LOGGER_LEVEL
+            - CELERY_LOG_LEVEL=$CELERY_LOGGER_LEVEL
             - CELERY_POLL_TIME=$CELERY_POLL_TIME
             - DB_ENV_POSTGRES_PASSWORD=$POSTGRES_PASSWORD
             # - CELERY_SOFT_TIME_LIMIT=$CELERY_SOFT_TIME_LIMIT
@@ -72,9 +73,9 @@ services:
         networks:
             - chiminey
         logging:
-            driver: gelf
-            options:
-                gelf-address: udp://localhost:12201
+            driver: json-file
+            options: 
+                max-size: 50m
                 #tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
 
     celeryhightasks:
@@ -96,17 +97,18 @@ services:
         environment:
             - CELERY_QUEUE=hightasks
             - DJANGO_DEBUG=$DJANGO_DEBUG
+            - LOGGER_LEVEL=$CHIMINEY_LOGGER_LEVEL
             - CHIMINEY_LOG_FILE=$CELERY_LOG_FILE
-            - LOGGER_LEVEL=$CELERY_LOGGER_LEVEL
+            - CELERY_LOG_LEVEL=$CELERY_LOGGER_LEVEL
             - CELERY_POLL_TIME=$CELERY_POLL_TIME
             - DB_ENV_POSTGRES_PASSWORD=$POSTGRES_PASSWORD
         env_file: .env
         networks:
             - chiminey
         logging:
-            driver: gelf
+            driver: json-file
             options:
-                gelf-address: udp://localhost:12201
+                max-size: 50m
                 #tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
 
 
@@ -130,17 +132,18 @@ services:
         environment:
             - DJANGO_DEBUG=$DJANGO_DEBUG
             - CHIMINEY_LOG_FILE=$BEAT_LOG_FILE
-            - LOGGER_LEVEL=$BEAT_LOGGER_LEVEL
+            - LOGGER_LEVEL=$CHIMINEY_LOGGER_LEVEL
+            - CELERY_LOG_LEVEL=$BEAT_LOGGER_LEVEL
             - CELERY_POLL_TIME=$CELERY_POLL_TIME
             - DB_ENV_POSTGRES_PASSWORD=$POSTGRES_PASSWORD
         env_file: .env
         networks:
             - chiminey
         logging:
-            driver: gelf
+            driver: json-file
             options:
-                gelf-address: udp://localhost:12201
-                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+                max-size: 50m
+                #tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
 
     nginx:
         restart: on-failure:5
@@ -308,9 +311,9 @@ services:
               hosts => ["elasticsearch:9200"]
             }
 
-            stdout {
-              codec => line
-            }
+            #stdout {
+            #  codec => line
+            #}
             
           }'
         ports:

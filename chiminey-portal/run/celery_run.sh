@@ -29,6 +29,8 @@ main() {
         # rm -vf /var/run/celery/w2_w2\@$host_name.pid
         # rm -vf /var/run/celery/w3_w3\@$host_name.pid
         # rm -vf /var/run/celery/w4_w4\@$host_name.pid
+        rm -vf /var/run/celery/$host_name.pid
+        
 
     }
 
@@ -47,7 +49,7 @@ main() {
     #su chiminey -c "python chiminey.py celeryd_multin w1 w2 w3 w4 -l $log_level --noft-time-limit=155200 --time-limit=115400 -E -Q:w1 hightasks -Q:w2,w3,w4 default --pidfile=/var/run/celery/%n.pid --logfile=/logs/celery/%n.log  >> /logs/celery/celery.log 2>&1"
     #su chiminey -c "python chiminey.py celeryd_multi restart w1 w2 w3 w4 -l $log_level --verbose --soft-time-limit=155200 --time-limit=115400 -E -Q:w1 hightasks -Q:w2,w3,w4 default --pidfile=/var/run/celery/%n_%h.pid --logfile=/logs/celery/celery.log  >> /logs/celery/celery.log 2>&1"
     #su chiminey -c "python chiminey.py celeryd_multi restart w1 w2 w3 w4 -l $log_level --verbose --soft-time -limit=155200 --time-limit=115400 -E -Q:w1 hightasks -Q:w2,w3,w4 default --pidfile=/var/run/celery/%n_%h.pid --logfile=/logs/celery/%n_%h.log >> /logs/celery/celery.log 2>&1"
-    su chiminey -c "python chiminey.py celery worker -n w1.%h -l $log_level --soft-time-limit=155200 --time-limit=115400 -Q $queue --pidfile=/var/run/celery/%n_%h.pid 2>&1"
+    su chiminey -c "python chiminey.py celery worker -n w1.%h -l $log_level --soft-time-limit=155200 --time-limit=115400 -Q $queue --pidfile=/var/run/celery/%h.pid 2>&1"
 
     echo "waiting..."
     tail -f /dev/null
