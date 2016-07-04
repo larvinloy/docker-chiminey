@@ -18,7 +18,7 @@ services:
         expose:
             - "22"
         volumes:
-            #- srcstore:/opt/chiminey/current
+            - srcstore:/opt/chiminey/current
             - chimineystore:/var/chiminey/remotesys
             #- logstore:/logs
             - /etc/localtime:/etc/localtime:ro
@@ -54,7 +54,7 @@ services:
             - varstore:/var/run/chiminey
             #- logstore:/logs
             - /etc/localtime:/etc/localtime:ro
-            #- srcstore:/opt/chiminey/current
+            - srcstore:/opt/chiminey/current
         depends_on:
             - db
             - redis
@@ -89,7 +89,7 @@ services:
             - varstore:/var/run/chiminey
             #- logstore:/logs
             - /etc/localtime:/etc/localtime:ro
-            #- srcstore:/opt/chiminey/current
+            - srcstore:/opt/chiminey/current
         depends_on:
             - db
             - redis
@@ -128,7 +128,7 @@ services:
             - chimineystore:/var/chiminey/remotesys
             #- logstore:/logs
             - /etc/localtime:/etc/localtime:ro
-            #- srcstore:/opt/chiminey/current
+            - srcstore:/opt/chiminey/current
         environment:
             - DJANGO_DEBUG=$DJANGO_DEBUG
             - CHIMINEY_LOG_FILE=$BEAT_LOG_FILE
@@ -262,7 +262,7 @@ services:
             - chiminey
         volumes:
             - chimineystore:/var/chiminey/remotesys
-            #- srcstore:/opt/chiminey/current
+            - srcstore:/opt/chiminey/current
         networks:
             - chiminey
         env_file: .env
