@@ -29,7 +29,7 @@ main() {
         # rm -vf /var/run/celery/w2_w2\@$host_name.pid
         # rm -vf /var/run/celery/w3_w3\@$host_name.pid
         # rm -vf /var/run/celery/w4_w4\@$host_name.pid
-        rm -vf /var/run/celery/$host_name.pid
+        rm -vf /var/run/celery/*.pid
         
 
     }
