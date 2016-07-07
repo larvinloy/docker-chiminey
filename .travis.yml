@@ -1,0 +1,43 @@
+sudo: required
+
+language: python
+
+services:
+    - docker
+
+env:
+    global:
+        - DOCKER_VERSION=1.11.1-0~trusty
+        - DOCKER_COMPOSE_VERSION=1.7.0
+
+before_install:
+    # list docker-engine versions
+    - apt-cache madison docker-engine
+
+    # upgrade docker-engine to specific version
+    - sudo apt-get -o Dpkg::Options::="--force-confnew" install -y docker-engine=${DOCKER_VERSION}
+
+    # reinstall docker-compose at specific version
+    - sudo rm /usr/local/bin/docker-compose
+    - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+    - chmod +x docker-compose
+    - sudo mv docker-compose /usr/local/bin
+
+script:
+      - docker version
+      - docker-compose version
+      - cp env .env
+      - docker-compose build
+      - docker-compose up -d
+      - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+      - VERSION=`cat version.txt`
+      - if [ "$VERSION" == ""  ]; then VERSION=latest; fi
+      - CHIMINEY_PORTAL=$DOCKER_USERNAME/chiminey-portal:"$VERSION"
+      - docker commit -a "$DOCKER_AUTHOR" -m "auto build" dockerchiminey_chiminey_1 $CHIMINEY_PORTAL
+      - CHIMINEY_NGINX=$DOCKER_USERNAME/chiminey-nginx:"$VERSION"
+      - docker commit -a "$DOCKER_AUTHOR" -m "auto build" dockerchiminey_nginx_1 $CHIMINEY_NGINX
+      - CHIMINEY_MONITOR=$DOCKER_USERNAME/chiminey-monitor"$LOCAL_TAG":"$VERSION"
+      - docker commit -a "$DOCKER_AUTHOR" -m "auto build" dockerchiminey_monitor_1 $CHIMINEY_MONITOR
+      - docker push $CHIMINEY_PORTAL
+      - docker push $CHIMINEY_MONITOR
+      - docker push $CHIMINEY_NGINX
