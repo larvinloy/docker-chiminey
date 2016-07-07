@@ -5,7 +5,7 @@ services:
     chiminey:
         restart: on-failure:5
         build: chiminey-portal
-        image: chiminey/chiminey-portal:prism-latest
+        image: chiminey/chiminey-portal:latest-prism
         #image: chiminey
         # links:
         #     #- db:db
@@ -46,7 +46,7 @@ services:
     celerydefault:
         restart: on-failure:5
         build: chiminey-portal
-        image: chiminey/chiminey-portal:prism-latest
+        image: chiminey/chiminey-portal:latest-prism
         command:
             - "celery"
         volumes:
@@ -81,7 +81,7 @@ services:
     celeryhightasks:
         restart: on-failure:5
         build: chiminey-portal
-        image: chiminey/chiminey-portal:prism-latest
+        image: chiminey/chiminey-portal:latest-prism
         command:
             - "celery"
         volumes:
@@ -115,7 +115,7 @@ services:
     beat:
         restart: on-failure:5
         build: chiminey-portal
-        image: chiminey/chiminey-portal:prism-latest
+        image: chiminey/chiminey-portal:latest-prism
         command:
             - "beat"
         depends_on:
@@ -148,7 +148,7 @@ services:
     nginx:
         restart: on-failure:5
         build: chiminey-nginx
-        image: chiminey/chiminey-nginx:prism-latest
+        image: chiminey/chiminey-nginx:latest-prism
         depends_on:
             - db
             - redis
@@ -212,7 +212,7 @@ services:
     monitor:
         restart: on-failure:5
         build: chiminey-monitor
-        image: chiminey/chiminey-monitor:prism-latest
+        image: chiminey/chiminey-monitor:latest-prism
         depends_on:
             - redis
             - celerydefault

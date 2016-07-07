@@ -1,1 +1,1 @@
-prism-latest
+latest-prism
