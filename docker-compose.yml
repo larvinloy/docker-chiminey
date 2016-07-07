@@ -211,8 +211,8 @@ services:
 
     monitor:
         restart: on-failure:5
-        image: chiminey-monitor
-        build: chiminey/chiminey-monitor:prism-latest
+        build: chiminey-monitor
+        image: chiminey/chiminey-monitor:prism-latest
         depends_on:
             - redis
             - celerydefault
