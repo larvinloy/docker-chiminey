@@ -27,8 +27,10 @@ script:
       - docker version
       - docker-compose version
       - cp env .env
-      - docker-compose build
+      - docker-compose build --no-cache
       - docker-compose up -d
+      - docker-compose ps
+      - doker-compose logs --tail="100"
       - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
       - VERSION=`cat version.txt`
       - if [ "$VERSION" == ""  ]; then VERSION=latest; fi
