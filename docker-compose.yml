@@ -238,7 +238,7 @@ services:
     makecerts:
         restart: never
         build: makecerts
-        images: chiminey/chiminey-makecerts:latest-prism
+        image: chiminey/chiminey-makecerts:latest-prism
         volumes:
             - ./chiminey-nginx/certs:/opt/certs
         command:
