@@ -41,7 +41,7 @@ script:
       - CHIMINEY_MONITOR=$DOCKER_USERNAME/chiminey-monitor"$LOCAL_TAG":"$VERSION"
       - docker commit -a "$DOCKER_AUTHOR" -m "auto build" dockerchiminey_monitor_1 $CHIMINEY_MONITOR
       - CHIMINEY_MAKECERTS=$DOCKER_USERNAME/chiminey-makecerts:"$VERSION"
-      - docker commit -a "$DOCKER_AUTHOR" -m "auto build" dockerchiminey_makecerts_1 $CHIMINEY_PORTAL
+      - docker commit -a "$DOCKER_AUTHOR" -m "auto build" dockerchiminey_makecerts_1 $CHIMINEY_MAKECERTS
       - docker push $CHIMINEY_PORTAL
       - docker push $CHIMINEY_NGINX
       - docker push $CHIMINEY_MAKECERTS
