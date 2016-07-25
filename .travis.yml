@@ -27,7 +27,8 @@ script:
       - docker version
       - docker-compose version
       - cp env .env
-      - docker-compose build --no-cache
+      - docker-compose build chiminey --no-cache
+      - docker-compose build 
       - docker-compose up -d
       - docker-compose ps
       - docker-compose logs --tail="100"
