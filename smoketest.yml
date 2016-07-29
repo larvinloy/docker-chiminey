@@ -1,0 +1,14 @@
+version: "2"
+
+services:
+
+    test:
+        restart: "no"
+        build: chiminey-test
+        env_file: ".env"
+        networks:
+            - chiminey
+networks:
+    chiminey:
+        external:
+            name: dockerchiminey_chiminey
