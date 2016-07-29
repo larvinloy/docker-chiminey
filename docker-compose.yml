@@ -18,14 +18,14 @@ services:
         expose:
             - "22"
         volumes:
+        # chiminey holds the canonical versions of srcstore and chimineystore
             - srcstore:/opt/chiminey/current
             - chimineystore:/var/chiminey/remotesys
-            #- logstore:/logs
             - /etc/localtime:/etc/localtime:ro
         depends_on:
             - db
             - redis
-            - logstash
+            #- logstash
         environment:
             - DJANGO_DEBUG=$DJANGO_DEBUG
             - APIHOST=http://nginx/
@@ -50,15 +50,15 @@ services:
         command:
             - "celery"
         volumes:
-            - chimineystore:/var/chiminey/remotesys
             - varstore:/var/run/chiminey
-            #- logstore:/logs
             - /etc/localtime:/etc/localtime:ro
-            - srcstore:/opt/chiminey/current
+        volumes_from:
+            - chiminey
         depends_on:
             - db
             - redis
-            - logstash
+            #- logstash
+            - chiminey
         environment:
             - CELERY_QUEUE=default
             - DJANGO_DEBUG=$DJANGO_DEBUG
@@ -84,16 +84,16 @@ services:
         image: chiminey/chiminey-portal:latest-prism
         command:
             - "celery"
+        volumes_from:
+            - chiminey
         volumes:
-            - chimineystore:/var/chiminey/remotesys
             - varstore:/var/run/chiminey
-            #- logstore:/logs
             - /etc/localtime:/etc/localtime:ro
-            - srcstore:/opt/chiminey/current
         depends_on:
             - db
             - redis
-            - logstash
+            #- logstash
+            - chiminey
         environment:
             - CELERY_QUEUE=hightasks
             - DJANGO_DEBUG=$DJANGO_DEBUG
@@ -121,14 +121,14 @@ services:
         depends_on:
             - db
             - redis
+            - chiminey
             - celerydefault
             - celeryhightasks
+        volumes_from:
+            - chiminey
         volumes:
             - varstore:/var/run/beat
-            - chimineystore:/var/chiminey/remotesys
-            #- logstore:/logs
             - /etc/localtime:/etc/localtime:ro
-            - srcstore:/opt/chiminey/current
         environment:
             - DJANGO_DEBUG=$DJANGO_DEBUG
             - CHIMINEY_LOG_FILE=$BEAT_LOG_FILE
@@ -157,9 +157,6 @@ services:
             - chiminey:ro
         volumes:
             - varstore:/var/run/beat
-            - chimineystore:/var/chiminey/remotesys
-            #- logstore:/logs
-            #- srcstore:/opt/chiminey/current
             - ./chiminey-nginx/certs:/opt/certs:ro
         # expose:
         #     - "5601"
@@ -182,7 +179,6 @@ services:
             - dbstore:/var/lib/postgresql/data
         environment:
             - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
-            #- PGDATA=/var/lib/postgresql/data
         networks:
             - chiminey
         env_file: .env
@@ -261,9 +257,8 @@ services:
             - ROOT_PASS=$SSH_PASS
         depends_on:
             - chiminey
-        volumes:
-            - chimineystore:/var/chiminey/remotesys
-            - srcstore:/opt/chiminey/current
+        volumes_from:
+            - chiminey
         networks:
             - chiminey
         env_file: .env
@@ -274,74 +269,74 @@ services:
         #        tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
 
 
-    elasticsearch:
-        restart: always
-        image: elasticsearch:2.3.1
-        networks:
-            - chiminey
-        volumes:
-            - elasticstore:/opt/elasticsearch/data
+    #elasticsearch:
+    #    restart: always
+    #    image: elasticsearch:2.3.1
+    #    networks:
+    #        - chiminey
+    #    volumes:
+    #        #u- elasticstore:/opt/elasticsearch/data
 
-    logstash:
-        restart: always
-        image: logstash
-        depends_on:
-          - elasticsearch
-        command: |
-          -e '
-          input {
-            # Default port is 12201/udp
-            gelf { }
-            # This generates one test event per minute.
-            # It is great for debugging, but you might
-            # want to remove it in production.
-            heartbeat { }
-          }
-          # The following filter is a hack!
-          # The "de_dot" filter would be better, but it
-          # is not pre-installed with logstash by default.
-          filter {
-            ruby {
-              code => "
-                event.to_hash.keys.each { |k| event[ k.gsub('"'.'"','"'_'"') ] = event.remove(k) if k.include?'"'.'"' }
-              "
-            }
-          }
-          output {
-            elasticsearch {
-              hosts => ["elasticsearch:9200"]
-            }
+    #logstash:
+    #    restart: always
+    #    image: logstash
+    #    depends_on:
+    #      - elasticsearch
+    #    command: |
+    #      -e '
+    #      input {
+    #        # Default port is 12201/udp
+    #        gelf { }
+    #        # This generates one test event per minute.
+    #        # It is great for debugging, but you might
+    #        # want to remove it in production.
+    #        heartbeat { }
+    #      }
+    #      # The following filter is a hack!
+    #      # The "de_dot" filter would be better, but it
+    #      # is not pre-installed with logstash by default.
+    #      filter {
+    #        ruby {
+    #          code => "
+    #            event.to_hash.keys.each { |k| event[ k.gsub('"'.'"','"'_'"') ] = event.remove(k) if k.include?'"'.'"' }
+    #          "
+    #        }
+    #      }
+    #      output {
+    #        elasticsearch {
+    #          hosts => ["elasticsearch:9200"]
+    #        }
 
-            #stdout {
-            #  codec => line
-            #}
+    #        #stdout {
+    #        #  codec => line
+    #        #}
 
-          }'
-        ports:
-            - "12201:12201/udp"
-        networks:
-            - chiminey
-        logging:
-            driver: json-file
-            options:
-               max-size: 50m
+    #      }'
+    #    ports:
+    #        - "12201:12201/udp"
+    #    networks:
+    #        - chiminey
+    #    logging:
+    #        driver: json-file
+    #        options:
+    #           max-size: 50m
 
-    kibana:
-        restart: always
-        image: kibana
-        env_file: .env
-        depends_on:
-            - elasticsearch
-            - logstash
-        expose:
-            - 5601
-        #ports:
-        #    - "$KIBANA_PORT:5601"
-        environment:
-            - ELASTICSEARCH_URL=http://elasticsearch:9200
-            - NODE_OPTIONS=--max-old-space-size=300
-        networks:
-            - chiminey
+    #kibana:
+    #    restart: always
+    #    image: kibana
+    #    env_file: .env
+    #    depends_on:
+    #        - elasticsearch
+    #        - logstash
+    #    expose:
+    #        - 5601
+    #    #ports:
+    #    #    - "$KIBANA_PORT:5601"
+    #    environment:
+    #        - ELASTICSEARCH_URL=http://elasticsearch:9200
+    #        - NODE_OPTIONS=--max-old-space-size=300
+    #    networks:
+    #        - chiminey
 
 
     # elasticsearch:
