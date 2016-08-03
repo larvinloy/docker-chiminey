@@ -1,1 +1,6 @@
 selenium
+lettuce
+lettuce_webdriver
+nose
+python-Levenshtein
+
