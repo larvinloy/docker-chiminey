@@ -6,7 +6,7 @@ This is a dockerized build of the docker branch of the Chiminey system: http://c
 Usage
 -----
 
-1. Install docker (>= 1.10.0) and docker-compose (>=1.7.0)
+1. Install docker (>= 1.12.0) and docker-compose (>=1.7.0)
 
 http://docs.docker.com/compose)
 
@@ -18,6 +18,7 @@ http://docs.docker.com/compose)
 3. Change your working directory
  ```
     $ cd docker-chiminey
+    $ git checkout prism
  ```
 
 4. Copy the prototype environment file to your personalised version and change passwords as needed:
