@@ -18,7 +18,7 @@ http://docs.docker.com/compose)
 3. Change your working directory
  ```
     $ cd docker-chiminey
-    $ git checkout prism
+    $ git checkout prismdemo
  ```
 
 4. Copy the prototype environment file to your personalised version and change passwords as needed:
