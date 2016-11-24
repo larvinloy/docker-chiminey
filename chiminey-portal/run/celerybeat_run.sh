@@ -26,6 +26,8 @@ function clean_up {
 
 }
 
+clean_up
+
 trap clean_up SIGTERM
 
 echo beating...
