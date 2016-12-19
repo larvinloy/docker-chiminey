@@ -18,7 +18,7 @@ http://docs.docker.com/compose)
 3. Change your working directory
  ```
     $ cd docker-chiminey
-    $ git checkout prism
+    $ git checkout jmtc_chiminey
  ```
 
 4. Copy the prototype environment file to your personalised version and change passwords as needed:
@@ -56,7 +56,7 @@ http://docs.docker.com/compose)
 9. Activate smart connectors from the tutorials at http://chiminey.readthedocs.org. The syntax to add any of the smart connectors that are included with the platform is ```$ ./activatesc smart-connector-name```. Agree to activate the smart connector when prompted.
 
 ```
-    $ /activatesc hrmclite
+    $ /activatesc jmtc
 ```
 
 This project is working reasonably well as a demo, but IS NOT FOR PRODUCTION USE
