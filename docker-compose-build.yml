@@ -5,7 +5,7 @@ services:
     chiminey:
         restart: on-failure:5
         build: chiminey-portal
-        image: chiminey/chiminey-portal:latest-prism
+        image: chiminey/chiminey-portal:latest-jmtc_chiminey
         #image: chiminey
         # links:
         #     #- db:db
@@ -46,7 +46,7 @@ services:
     celerydefault:
         restart: on-failure:5
         build: chiminey-portal
-        image: chiminey/chiminey-portal:latest-prism
+        image: chiminey/chiminey-portal:latest-jmtc_chiminey
         command:
             - "celery"
         volumes:
@@ -81,7 +81,7 @@ services:
     celeryhightasks:
         restart: on-failure:5
         build: chiminey-portal
-        image: chiminey/chiminey-portal:latest-prism
+        image: chiminey/chiminey-portal:latest-jmtc_chiminey
         command:
             - "celery"
         volumes_from:
@@ -115,7 +115,7 @@ services:
     beat:
         restart: on-failure:5
         build: chiminey-portal
-        image: chiminey/chiminey-portal:latest-prism
+        image: chiminey/chiminey-portal:latest-jmtc_chiminey
         command:
             - "beat"
         depends_on:
@@ -148,7 +148,7 @@ services:
     nginx:
         restart: on-failure:5
         build: chiminey-nginx
-        image: chiminey/chiminey-nginx:latest-prism
+        image: chiminey/chiminey-nginx:latest-jmtc_chiminey
         depends_on:
             - db
             - redis
@@ -208,7 +208,7 @@ services:
     monitor:
         restart: on-failure:5
         build: chiminey-monitor
-        image: chiminey/chiminey-monitor:latest-prism
+        image: chiminey/chiminey-monitor:latest-jmtc_chiminey
         depends_on:
             - redis
             - celerydefault
@@ -234,7 +234,7 @@ services:
     makecerts:
         restart: never
         build: makecerts
-        image: chiminey/chiminey-makecerts:latest-prism
+        image: chiminey/chiminey-makecerts:latest-jmtc_chiminey
         volumes:
             - ./chiminey-nginx/certs:/opt/certs
         command:
