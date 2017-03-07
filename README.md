@@ -1,7 +1,7 @@
 Dockerized Chiminey
 ===================
 
-This is a dockerized build of the docker branch of the Chiminey system: http://chiminey.net, built over the 3drac_chiminey brach. This branch allows Chiminey to run the roughness algortihm on data extracted from Digital Elevation Models and jpeg/png images. 
+This is a dockerized build of the docker branch of the Chiminey system: http://chiminey.net, built over the 3drac_chiminey brach. This branch allows Chiminey to run the roughness algorithm on data extracted from Digital Elevation Models and jpeg/png images. 
 For more information read ```REPORT.pdf.```
 
 To convert an ASCII dem file or jpeg/png image to inpute file for this branch use https://github.com/larvinloy/transformDEMdata
