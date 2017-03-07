@@ -48,8 +48,8 @@ RUN touch /opt/chiminey/.ssh/known_hosts
 RUN mkdir -p /var/chiminey/remotesys
 
 # install chiminey
-ENV CHIMINEY_URL https://github.com/chiminey/chiminey.git
-ENV CHIMINEY_BRANCH master
+ENV CHIMINEY_URL https://github.com/larvinloy/chiminey.git
+ENV CHIMINEY_BRANCH 3drac_chiminey2
 
 RUN echo 'Cloning Chiminey' && cd /opt/chiminey &&  git clone -b ${CHIMINEY_BRANCH} ${CHIMINEY_URL} current
 
